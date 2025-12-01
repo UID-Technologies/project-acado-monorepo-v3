@@ -1,0 +1,63 @@
+# Frontend React Web Dockerfile - Unprivileged Version
+# Multi-stage build for optimized production image with non-root user
+# Supports: linux/amd64, linux/arm64
+
+# Stage 1: Dependencies
+FROM --platform=$BUILDPLATFORM node:20-alpine AS deps
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --legacy-peer-deps
+
+# Stage 2: Build
+FROM --platform=$BUILDPLATFORM node:20-alpine AS build
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code and config
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY tsconfig.app.json ./
+COPY tsconfig.node.json ./
+COPY vite.config.ts ./
+COPY index.html ./
+COPY postcss.config.js ./
+COPY tailwind.config.ts ./
+COPY components.json ./
+COPY src ./src
+COPY public ./public
+
+# Set build-time environment variables
+ARG VITE_API_BASE_URL=http://57.159.29.149:4000
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
+# Build the application
+RUN npm run build
+
+# Stage 3: Production with Nginx Unprivileged
+FROM --platform=$TARGETPLATFORM nginxinc/nginx-unprivileged:alpine AS production
+
+# Copy custom nginx configuration (for unprivileged nginx, listen on port 8080)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy built application from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Already running as nginx user (uid 101)
+USER 101
+
+# Expose port 8080 (unprivileged nginx uses 8080 instead of 80)
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
+

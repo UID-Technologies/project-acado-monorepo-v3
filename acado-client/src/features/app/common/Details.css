@@ -1,0 +1,66 @@
+.custom-html img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.add-ul-li ul {
+    list-style-type: disc; /* bullet points */
+    margin-left: 0.3rem;
+    /* margin-bottom: 1rem; */
+    padding-left: 1rem;
+    margin-top: 0.2rem;
+    /* font-family: initial !important; */
+    /* font-size: initial !important; */
+}
+
+.add-ul-li li {
+    margin-bottom: 0.5rem; /* spacing between list items */
+}
+
+
+.custom-html-container {
+    /* font-family: initial !important; */
+    /* font-size: initial !important; */
+    font-weight: initial !important;
+    /* color: initial !important; */
+    line-height: 180% !important;
+    /* line-height: initial !important; */
+    background: initial !important;
+    padding: 10px; /* Adjust as needed */
+    overflow: auto; /* Ensures content doesn't overflow */
+}
+
+.custom-html-container img {
+    display: block !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+}
+
+.custom-html-container br {
+    display: none !important;
+}
+
+.custom-html-container p {
+    margin-bottom: 10px !important; /* Adjust as needed */
+}
+
+/* Reset all elements inside */
+.custom-html-container * {
+    font-family: "Inter" !important;
+    /* font-size: inherit; */
+    color: inherit;
+    background: inherit;
+}
+
+.custom-html-container table {
+    border-collapse: collapse; /* Ensures tables render properly */
+    width: 100%;
+}
+
+.custom-html-container td,
+.custom-html-container th {
+    border: 1px solid #ddd; /* Default border */
+    padding: 8px;
+    text-align: left;
+}

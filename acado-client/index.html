@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Acado.ai is a platform for Education" />
+  <title>Acado.ai</title>
+  <!-- og details -->
+  <meta property="og:title" content="Acado.ai" />
+  <meta property="og:description" content="Acado.ai is a platform for Education" />
+  <meta property="og:image" content="https://acado.ai/img/event/event.jpg" />
+  <meta property="og:url" content="https://acado.ai" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Acado.ai" />
+  <meta property="og:locale" content="en_US" />
+
+  <script>
+    // Force reload when sharing links (Only for SEO & Social Media Crawlers)
+    if (navigator.userAgent.includes("facebookexternalhit") || navigator.userAgent.includes("Twitterbot")) {
+      window.location.reload(true);
+    }
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <script>
+    // add meta org tags
+    const meta = document.createElement('meta');
+    meta.name = 'og:title';
+    meta.content = 'Acado.ai sadihasiudjashdiashidhasiu';
+    document.head.appendChild(meta);
+  </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX30FQ97VE"></script>
+  <script>  window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-VX30FQ97VE'); </script>
+</body>
+
+</html>

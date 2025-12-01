@@ -1,0 +1,323 @@
+html {
+    scroll-behavior: smooth;
+}
+
+.whatistheprogram-section .whatistheprogram-container h3 {
+    color: #BCF035;
+    margin-bottom: 15px;
+}
+
+html.light .whatistheprogram-section .whatistheprogram-container h3 {
+    color: #7C57FC;
+}
+
+.whatistheprogram-section .whatistheprogram-container .whatistheprogram-inner {
+    margin-bottom: 40px;
+}
+
+.whatistheprogram-section .whatistheprogram-container .whatistheprogram-inner ol {
+    list-style-type: none;
+    padding-left: 0;
+    gap: 10px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.whatistheprogram-section .whatistheprogram-container .whatistheprogram-inner ol li {
+    padding: 0 10px;
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+html.light .whatistheprogram-section .whatistheprogram-container .whatistheprogram-inner ol li {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.whatistheprogram-section .whatistheprogram-container ul {
+    list-style-type: none;
+    padding-left: 0;
+    gap: 10px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.whatistheprogram-section .whatistheprogram-container ul li {
+    padding: 0 10px;
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.whatistheprogram-section .whatistheprogram-container ul li .thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+html.light .whatistheprogram-section .whatistheprogram-container ul li {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.whatistheprogram-section .whatistheprogram-container ul li .thumb img {
+    width: 150px;
+    height: 150px;
+}
+
+.whatistheprogram-section .whatistheprogram-container ul li div {
+    margin-top: 40px;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container h3 {
+    color: #BCF035;
+    margin-bottom: 30px;
+}
+
+html.light .whatyoushoulddoit-section .whatyoushoulddoit-container h3 {
+    color: #7C57FC;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .left-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section .percentage-score {
+    color: #BCF035;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section h2 {
+    color: #BCF035;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section ul {
+    list-style-type: none;
+    padding-left: 0;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section ul li:first-child {
+    margin-top: 20px;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section ul li {
+    padding: 0 10px;
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: #BCF035;
+}
+
+html.light .whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section ul li {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .right-section ul li::before {
+    content: '✔️';
+    margin-right: 10px;
+    color: #BCF035 !important;
+}
+
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container h3 {
+    color: #BCF035;
+    margin-bottom: 30px;
+}
+
+html.light .whatisrequiredtoenroll-section .whatisrequiredtoenroll-container h3 {
+    color: #7C57FC;
+}
+
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner .left-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner .right-section ul {
+    list-style-type: none;
+    padding-left: 0;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner .right-section ul li {
+    padding: 0 10px;
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: #BCF035;
+}
+
+html.light .whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner .right-section ul li {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner .right-section ul li::before {
+    content: '✔️';
+    margin-right: 10px;
+    color: #BCF035 !important;
+}
+
+.testimonial {
+    background-color: #000;
+    padding: 40px 0;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100vw;
+    width: 100%;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.testimonial .testimonial-thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.testimonial .testimonial-thumb img {
+    width: 130px;
+    height: 130px;
+}
+
+html.light .testimonial {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.testimonial .testimonial-content {
+    /* grid 2 */
+    grid-column: 2 / 4;
+}
+
+.testimonial .testimonial-content .title {
+    color: #BCF035;
+    margin-top: 10px;
+}
+
+html.light .testimonial .testimonial-content .title {
+    color: #7C57FC;
+}
+
+.transform_the_way_we_teach_and_the_way_we_learn h3 {
+    color: #BCF035;
+    margin-bottom: 20px;
+}
+
+html.light .transform_the_way_we_teach_and_the_way_we_learn h3 {
+    color: #7C57FC;
+}
+
+.transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper ul li {
+    padding: 0 10px;
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+html.light .transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper ul li {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper ul li .transform-thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper ul li .transform-thumb img {
+    width: 50px;
+    height: 50px;
+}
+
+.transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper ul li .transform-baloon h6 {
+    color: #BCF035;
+}
+
+html.light .transform_the_way_we_teach_and_the_way_we_learn .transform-wrapper ul li .transform-baloon h6 {
+    color: #7C57FC;
+}
+
+.what_your_will_learn_section h3 {
+    color: #BCF035;
+    margin-bottom: 20px;
+}
+
+html.light .what_your_will_learn_section h3 {
+    color: #7C57FC;
+}
+
+.what_your_will_learn_section ol {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.what_your_will_learn_section ol li {
+    padding: 0 10px;
+    background-color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: #BCF035;
+    text-align: center;
+}
+
+html.light .what_your_will_learn_section ol li {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.what_your_will_learn_section ol li .thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.what_your_will_learn_section ol li .thumb img {
+    width: 100px;
+    height: 100px;
+}
+
+.what_your_will_learn_section ol li .title {
+    color: #BCF035;
+    font-size: 15px;
+}
+
+html.light .what_your_will_learn_section ol li .title {
+    color: #7C57FC;
+}

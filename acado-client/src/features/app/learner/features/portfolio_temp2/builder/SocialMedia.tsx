@@ -1,0 +1,143 @@
+import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
+
+import { addSocialLinks } from "@services/learner/PortfolioService";
+import { Label } from "@/components/ui/label";
+import Input from "@/components/ui/Input";
+import { Button } from "@/components/ui/ShadcnButton";
+
+const SocialMediaSchema = z.object({
+    mob_num: z.string().min(10, "Mobile number is required"),
+    email: z.string().email("Invalid email address"),
+    linkedin: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    facebook: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    twitter: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    site_url: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    bee: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    dribble: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    insta: z.string().url("Invalid URL").or(z.literal("")).optional(),
+    pinterest: z.string().url("Invalid URL").or(z.literal("")).optional(),
+});
+
+type SocialMediaFormData = z.infer<typeof SocialMediaSchema>;
+
+interface SocialMediaProps {
+    show: boolean;
+    onClose: (show: boolean) => void;
+    onSuccess?: () => void;
+    socialMedia?: SocialMediaFormData;
+}
+
+const SocialMedia: React.FC<SocialMediaProps> = ({ show, onClose, onSuccess, socialMedia }) => {
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<SocialMediaFormData>({
+        resolver: zodResolver(SocialMediaSchema),
+        defaultValues: socialMedia || {},
+    });
+
+
+
+    const onSubmit = useCallback(async (data: SocialMediaFormData) => {
+        try {
+            await addSocialLinks(data);
+            reset();
+            onSuccess && onSuccess();
+            onClose(false);
+            toast.success("Social media information added successfully");
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to add social media information. Please try again.");
+        }
+    }, [reset, onSuccess, onClose]);
+
+    return (
+        <Dialog open={show} onOpenChange={onClose}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Add Social Media</DialogTitle>
+                    <DialogDescription>Enter your social media details</DialogDescription>
+                </DialogHeader>
+                <form className="bg-white dark:bg-gray-950" onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex gap-3 mb-3">
+                        <div>
+                            <Label htmlFor="mob_num">Mobile Number</Label>
+                            <Input id="mob_num" {...register("mob_num")} placeholder="Enter mobile number" />
+                            <p className="text-red-500 text-sm">{errors.mob_num?.message}</p>
+                        </div>
+                        <div>
+                            <Label htmlFor="email">Email</Label>
+                            <Input id="email" type="email" {...register("email")} placeholder="Enter email" />
+                            <p className="text-red-500 text-sm">{errors.email?.message}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3 mb-3">
+                        <div>
+                            <Label htmlFor="linkedin">LinkedIn</Label>
+                            <Input id="linkedin" {...register("linkedin")} placeholder="Enter LinkedIn URL" />
+                            <p className="text-red-500 text-sm">{errors.linkedin?.message}</p>
+                        </div>
+                        <div>
+                            <Label htmlFor="facebook">Facebook</Label>
+                            <Input id="facebook" {...register("facebook")} placeholder="Enter Facebook URL" />
+                            <p className="text-red-500 text-sm">{errors.facebook?.message}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3 mb-3">
+                        <div>
+                            <Label htmlFor="twitter">Twitter</Label>
+                            <Input id="twitter" {...register("twitter")} placeholder="Enter Twitter URL" />
+                            <p className="text-red-500 text-sm">{errors.twitter?.message}</p>
+                        </div>
+                        <div>
+                            <Label htmlFor="site_url">Website</Label>
+                            <Input id="site_url" {...register("site_url")} placeholder="Enter website URL" />
+                            <p className="text-red-500 text-sm">{errors.site_url?.message}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3 mb-3">
+                        <div>
+                            <Label htmlFor="bee">Bee</Label>
+                            <Input id="bee" {...register("bee")} placeholder="Enter Bee URL" />
+                            <p className="text-red-500 text-sm">{errors.bee?.message}</p>
+                        </div>
+                        <div>
+                            <Label htmlFor="dribble">Dribbble</Label>
+                            <Input id="dribble" {...register("dribble")} placeholder="Enter Dribbble URL" />
+                            <p className="text-red-500 text-sm">{errors.dribble?.message}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3 mb-3">
+                        <div>
+                            <Label htmlFor="insta">Instagram</Label>
+                            <Input id="insta" {...register("insta")} placeholder="Enter Instagram URL" />
+                            <p className="text-red-500 text-sm">{errors.insta?.message}</p>
+                        </div>
+                        <div>
+                            <Label htmlFor="pinterest">Pinterest</Label>
+                            <Input id="pinterest" {...register("pinterest")} placeholder="Enter Pinterest URL" />
+                            <p className="text-red-500 text-sm">{errors.pinterest?.message}</p>
+                        </div>
+                    </div>
+                    <Button className="text-white dark:text-black mt-3" type="submit">Update</Button>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+export default SocialMedia;

@@ -1,0 +1,57 @@
+interface Dimension {
+    height: number;
+    width: number;
+}
+
+interface MultiFileUploadsCount {
+
+}
+
+export interface ReelsList {
+    id: number;
+    title: string;
+    description: string;
+    created_at: number;
+    created_by: number;
+    updated_at: number;
+    updated_by: number;
+    status: string;
+    parent_id: number;
+    category_id: number;
+    content_type: string;
+    resource_path: string;
+    language: string;
+    tag: string | null;
+    like_count: number;
+    program_content_id: number;
+    start_date: number;
+    end_date: number;
+    is_multilingual: number;
+    visibility_value: number;
+    visibility: number;
+    dimension: Dimension;
+    multi_file_uploads: string[];
+    view_count: number;
+    multiple_file_upload: string | null;
+    user_id: number;
+    name: string;
+    email: string;
+    profile_image: string | null;
+    user_status: string;
+    user_like_trackings_id: number | null;
+    user_liked: number;
+    resource_type: string;
+    multi_file_uploads_count: MultiFileUploadsCount[];
+    thumbnail_url: string;
+    is_attempt: number;
+    user_submitted_file: string;
+    user_submitted_multiple_file: string;
+}
+
+export interface ReelsListResponse {
+    status: number;
+    data: {
+        list: ReelsList[];
+    };
+    error: any[];
+}

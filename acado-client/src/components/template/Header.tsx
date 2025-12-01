@@ -1,0 +1,55 @@
+import classNames from '@/utils/classNames'
+import { HEADER_HEIGHT } from '@app/config/constants/theme.constant'
+import type { ReactNode } from 'react'
+import type { CommonProps } from '@app/types/common'
+import useAuth from '@app/providers/auth/useAuth'
+
+interface HeaderProps extends CommonProps {
+    headerStart?: ReactNode
+    headerEnd?: ReactNode
+    headerMiddle?: ReactNode
+    container?: boolean
+    wrapperClass?: string
+}
+
+const Header = (props: HeaderProps) => {
+    const { user } = useAuth()
+    const {
+        headerStart,
+        headerEnd,
+        headerMiddle,
+        className,
+        container,
+        wrapperClass,
+    } = props
+
+    return (
+        <header className={classNames('header', className)}>
+            <div
+                className={classNames(
+                    'header-wrapper',
+                    container && 'container mx-auto',
+                    wrapperClass,
+                )}
+                style={{ height: HEADER_HEIGHT }}
+            >
+                <div className="header-action header-action-start">
+                    {headerStart}
+
+                </div>
+
+                {headerMiddle && (
+                    <div className="header-action header-action-middle">
+                        {headerMiddle}
+                    </div>
+                )}
+
+                <div className="header-action header-action-end flex items-center gap-4">
+                    {headerEnd}
+                </div>
+            </div>
+        </header>
+    )
+}
+
+export default Header

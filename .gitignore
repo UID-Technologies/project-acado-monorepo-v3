@@ -1,0 +1,60 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# Docker volumes and data
+data/
+mongodb/
+mongodb-config/
+/var/lib/akedo/
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pino-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# AWS
+.aws/
+*.pem
+*.key
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+
+ci-cd.md
+server-details.md

@@ -1,0 +1,512 @@
+{
+  "masterCategories": [
+    {
+      "id": "personal",
+      "name": "Personal Information",
+      "icon": "User",
+      "description": "Basic personal details and contact information",
+      "order": 1,
+      "subcategories": [
+        {
+          "id": "basic-info",
+          "name": "Basic Information",
+          "categoryId": "personal",
+          "order": 1
+        },
+        {
+          "id": "contact",
+          "name": "Contact Details",
+          "categoryId": "personal",
+          "order": 2
+        },
+        {
+          "id": "identity",
+          "name": "Identity Documents",
+          "categoryId": "personal",
+          "order": 3
+        },
+        {
+          "id": "emergency",
+          "name": "Emergency Contact",
+          "categoryId": "personal",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "name": "Education",
+      "icon": "GraduationCap",
+      "description": "Academic qualifications and educational background",
+      "order": 2,
+      "subcategories": [
+        {
+          "id": "high-school",
+          "name": "High School",
+          "categoryId": "education",
+          "order": 1
+        },
+        {
+          "id": "undergraduate",
+          "name": "Undergraduate",
+          "categoryId": "education",
+          "order": 2
+        },
+        {
+          "id": "postgraduate",
+          "name": "Postgraduate",
+          "categoryId": "education",
+          "order": 3
+        },
+        {
+          "id": "test-scores",
+          "name": "Test Scores",
+          "categoryId": "education",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "name": "Experience",
+      "icon": "Briefcase",
+      "description": "Professional and work experience",
+      "order": 3,
+      "subcategories": [
+        {
+          "id": "work-exp",
+          "name": "Work Experience",
+          "categoryId": "experience",
+          "order": 1
+        },
+        {
+          "id": "internships",
+          "name": "Internships",
+          "categoryId": "experience",
+          "order": 2
+        },
+        {
+          "id": "volunteering",
+          "name": "Volunteering",
+          "categoryId": "experience",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "Projects & Research",
+      "icon": "Lightbulb",
+      "description": "Academic projects, research work, and publications",
+      "order": 4,
+      "subcategories": [
+        {
+          "id": "academic-projects",
+          "name": "Academic Projects",
+          "categoryId": "projects",
+          "order": 1
+        },
+        {
+          "id": "research",
+          "name": "Research Papers",
+          "categoryId": "projects",
+          "order": 2
+        },
+        {
+          "id": "publications",
+          "name": "Publications",
+          "categoryId": "projects",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "id": "skills",
+      "name": "Skills & Languages",
+      "icon": "Award",
+      "description": "Technical skills, languages, and certifications",
+      "order": 5,
+      "subcategories": [
+        {
+          "id": "technical",
+          "name": "Technical Skills",
+          "categoryId": "skills",
+          "order": 1
+        },
+        {
+          "id": "languages",
+          "name": "Languages",
+          "categoryId": "skills",
+          "order": 2
+        },
+        {
+          "id": "certifications",
+          "name": "Certifications",
+          "categoryId": "skills",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "id": "documents",
+      "name": "Documents",
+      "icon": "FileText",
+      "description": "Required documents and uploads",
+      "order": 6,
+      "subcategories": [
+        {
+          "id": "academic-docs",
+          "name": "Academic Documents",
+          "categoryId": "documents",
+          "order": 1
+        },
+        {
+          "id": "identity-docs",
+          "name": "Identity Documents",
+          "categoryId": "documents",
+          "order": 2
+        },
+        {
+          "id": "financial-docs",
+          "name": "Financial Documents",
+          "categoryId": "documents",
+          "order": 3
+        },
+        {
+          "id": "other-docs",
+          "name": "Other Documents",
+          "categoryId": "documents",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "essay",
+      "name": "Essays & Statements",
+      "icon": "PenTool",
+      "description": "Personal statements, essays, and motivation letters",
+      "order": 7
+    },
+    {
+      "id": "references",
+      "name": "References",
+      "icon": "Users",
+      "description": "Academic and professional references",
+      "order": 8
+    },
+    {
+      "id": "financial",
+      "name": "Financial Information",
+      "icon": "DollarSign",
+      "description": "Financial details and sponsorship information",
+      "order": 9
+    },
+    {
+      "id": "preferences",
+      "name": "Preferences",
+      "icon": "Settings",
+      "description": "Course preferences and program choices",
+      "order": 10
+    },
+    {
+      "id": "cat-1760535678460",
+      "name": "New Category",
+      "icon": "Folder",
+      "description": "New Category Description",
+      "order": 11,
+      "subcategories": [
+        {
+          "id": "subcat-1760553045596",
+          "categoryId": "cat-1760535678460",
+          "name": "SSSS",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "masterFields": [
+    {
+      "id": "first_name",
+      "name": "first_name",
+      "label": "First Name",
+      "type": "text",
+      "placeholder": "Enter your first name",
+      "required": true,
+      "categoryId": "personal",
+      "subcategoryId": "basic-info",
+      "order": 1
+    },
+    {
+      "id": "middle_name",
+      "name": "middle_name",
+      "label": "Middle Name",
+      "type": "text",
+      "placeholder": "Enter your middle name",
+      "required": false,
+      "categoryId": "personal",
+      "subcategoryId": "basic-info",
+      "order": 2
+    },
+    {
+      "id": "last_name",
+      "name": "last_name",
+      "label": "Last Name",
+      "type": "text",
+      "placeholder": "Enter your last name",
+      "required": true,
+      "categoryId": "personal",
+      "subcategoryId": "basic-info",
+      "order": 3
+    },
+    {
+      "id": "date_of_birth",
+      "name": "date_of_birth",
+      "label": "Date of Birth",
+      "type": "date",
+      "required": true,
+      "categoryId": "personal",
+      "subcategoryId": "basic-info",
+      "order": 4
+    },
+    {
+      "id": "gender",
+      "name": "gender",
+      "label": "Gender",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "value": "male",
+          "label": "Male"
+        },
+        {
+          "value": "female",
+          "label": "Female"
+        },
+        {
+          "value": "other",
+          "label": "Other"
+        },
+        {
+          "value": "prefer_not_to_say",
+          "label": "Prefer not to say"
+        }
+      ],
+      "categoryId": "personal",
+      "subcategoryId": "basic-info",
+      "order": 5
+    },
+    {
+      "id": "email",
+      "name": "email",
+      "label": "Email Address",
+      "type": "email",
+      "placeholder": "your.email@example.com",
+      "required": true,
+      "categoryId": "personal",
+      "subcategoryId": "contact",
+      "order": 1
+    },
+    {
+      "id": "phone",
+      "name": "phone",
+      "label": "Phone Number",
+      "type": "tel",
+      "placeholder": "+1234567890",
+      "required": true,
+      "categoryId": "personal",
+      "subcategoryId": "contact",
+      "order": 2
+    },
+    {
+      "id": "fd52",
+      "name": "first_name",
+      "label": "First Name",
+      "type": "text",
+      "placeholder": "",
+      "description": "",
+      "required": false,
+      "categoryId": "cat-1760535678460",
+      "subcategoryId": "",
+      "order": 1
+    },
+    {
+      "id": "6132",
+      "name": "first_name",
+      "label": "First Name",
+      "type": "email",
+      "placeholder": "eeeee",
+      "description": "ddddd",
+      "required": true,
+      "categoryId": "education",
+      "subcategoryId": "high-school",
+      "order": 1
+    },
+    {
+      "id": "3f55",
+      "name": "new_field",
+      "label": "New Field",
+      "type": "email",
+      "placeholder": "",
+      "description": "",
+      "required": false,
+      "categoryId": "cat-1760535678460",
+      "subcategoryId": "subcat-1760553045596",
+      "order": 2
+    },
+    {
+      "id": "field-1760559579460",
+      "name": "ddddd",
+      "label": "First Name",
+      "type": "text",
+      "placeholder": "ddddd",
+      "required": true,
+      "categoryId": "cat-1760535678460",
+      "subcategoryId": "subcat-1760553045596",
+      "options": [],
+      "description": "dddddddd",
+      "order": 3,
+      "isCustom": true
+    }
+  ],
+  "universityFormSections": [
+    {
+      "id": "basic",
+      "title": "Basic Information",
+      "description": "Essential details about the university",
+      "icon": "Building2",
+      "order": 1,
+      "isRequired": true,
+      "fields": [
+        {
+          "id": "name",
+          "name": "name",
+          "label": "University Name",
+          "type": "text",
+          "placeholder": "e.g., Harvard University",
+          "required": true,
+          "section": "basic",
+          "order": 1
+        },
+        {
+          "id": "website",
+          "name": "website",
+          "label": "Official Website",
+          "type": "url",
+          "placeholder": "https://www.university.edu",
+          "required": true,
+          "section": "basic",
+          "order": 4
+        }
+      ]
+    }
+  ],
+  "universities": [],
+  "courses": [],
+  "users": [
+    {
+      "id": "1",
+      "email": "admin@test.com",
+      "name": "Admin User",
+      "role": "admin",
+      "createdAt": "2025-10-15T13:04:58.366Z"
+    }
+  ],
+  "forms": [
+    {
+      "id": "c1a6",
+      "description": "This is description",
+      "fields": [
+        {
+          "id": "first_name",
+          "name": "first_name",
+          "label": "First Name",
+          "type": "text",
+          "placeholder": "Enter your first name",
+          "required": true,
+          "categoryId": "personal",
+          "subcategoryId": "basic-info",
+          "order": 1,
+          "isVisible": true,
+          "isRequired": true,
+          "customLabel": "First Name"
+        },
+        {
+          "id": "middle_name",
+          "name": "middle_name",
+          "label": "Middle Name",
+          "type": "text",
+          "placeholder": "Enter your middle name",
+          "required": false,
+          "categoryId": "personal",
+          "subcategoryId": "basic-info",
+          "order": 2,
+          "isVisible": true,
+          "isRequired": false,
+          "customLabel": "Middle Name"
+        },
+        {
+          "id": "last_name",
+          "name": "last_name",
+          "label": "Last Name",
+          "type": "text",
+          "placeholder": "Enter your last name",
+          "required": true,
+          "categoryId": "personal",
+          "subcategoryId": "basic-info",
+          "order": 3,
+          "isVisible": true,
+          "isRequired": true,
+          "customLabel": "Last Name"
+        },
+        {
+          "id": "date_of_birth",
+          "name": "date_of_birth",
+          "label": "Date of Birth",
+          "type": "date",
+          "required": true,
+          "categoryId": "personal",
+          "subcategoryId": "basic-info",
+          "order": 4,
+          "isVisible": true,
+          "isRequired": true,
+          "customLabel": "Date of Birth"
+        },
+        {
+          "id": "gender",
+          "name": "gender",
+          "label": "Gender",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "male",
+              "label": "Male"
+            },
+            {
+              "value": "female",
+              "label": "Female"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            },
+            {
+              "value": "prefer_not_to_say",
+              "label": "Prefer not to say"
+            }
+          ],
+          "categoryId": "personal",
+          "subcategoryId": "basic-info",
+          "order": 5,
+          "isVisible": true,
+          "isRequired": true,
+          "customLabel": "Gender"
+        }
+      ]
+    }
+  ],
+  "applications": [],
+  "applicationProcesses": [],
+  "portfolio": []
+}

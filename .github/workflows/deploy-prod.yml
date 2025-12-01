@@ -1,0 +1,164 @@
+name: Deploy to Production VM
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: [self-hosted, acado-prod-runner]
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify runner environment
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Runner Name: ${{ runner.name }}"
+          docker --version
+          docker compose version || docker-compose --version
+
+      - name: Create environment file
+        run: |
+          mkdir -p deploy/env
+          cat > deploy/env/backend.prod.env << 'EOF'
+          NODE_ENV=production
+          PORT=5000
+          MONGO_URI=${{ secrets.MONGO_URI }}
+          JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}
+          JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
+          ACCESS_TOKEN_EXPIRES_IN=15m
+          REFRESH_TOKEN_EXPIRES_IN=7d
+          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          MAIL_HOST=${{ secrets.MAIL_HOST }}
+          MAIL_PORT=${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+          MAIL_FROM_ADDRESS=${{ secrets.MAIL_FROM_ADDRESS }}
+          MAIL_PREVIEW=false
+          AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME }}
+          AZURE_STORAGE_ACCOUNT_URL=${{ secrets.AZURE_STORAGE_ACCOUNT_URL }}
+          EOF
+          chmod 600 deploy/env/backend.prod.env
+
+      - name: Set deployment tag
+        run: |
+          echo "TAG=prod-${{ github.sha }}" >> $GITHUB_ENV
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> $GITHUB_ENV
+
+      - name: Backup current deployment
+        working-directory: ./deploy
+        run: |
+          if docker ps -q -f name=backend-services-prod > /dev/null 2>&1; then
+            echo "Creating backup of current images..."
+            docker tag backend-services:prod backend-services:prod-backup || true
+            docker tag web-admin:prod web-admin:prod-backup || true
+          fi
+
+      - name: Stop existing containers
+        working-directory: ./deploy
+        run: |
+          # Stop containers managed by docker-compose (both old and new locations)
+          docker compose -f docker-compose.prod.yml down --remove-orphans || true
+          cd ..
+          docker compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
+          
+          # Force remove any containers with matching names
+          docker stop backend-services-prod 2>/dev/null || true
+          docker rm backend-services-prod 2>/dev/null || true
+          docker stop web-admin-prod 2>/dev/null || true
+          docker rm web-admin-prod 2>/dev/null || true
+          
+          sleep 5
+
+      - name: Build and deploy services
+        working-directory: ./deploy
+        env:
+          TAG: ${{ env.TAG }}
+          BACKEND_ENV_FILE: ./env/backend.prod.env
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        run: |
+          echo "Building images with tag: $TAG"
+          docker compose -f docker-compose.prod.yml build --no-cache
+          echo "Starting containers..."
+          docker compose -f docker-compose.prod.yml up -d
+          echo "Waiting for services to stabilize..."
+          sleep 15
+
+      - name: Verify deployment
+        run: |
+          echo "Checking container status..."
+          docker ps -a
+          
+          echo "Checking backend health..."
+          for i in {1..30}; do
+            if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+              echo "✓ Backend is healthy"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "✗ Backend health check failed"
+              docker logs backend-services-prod --tail 50
+              exit 1
+            fi
+            echo "Waiting for backend... (attempt $i/30)"
+            sleep 2
+          done
+          
+          echo "Checking frontend health..."
+          for i in {1..15}; do
+            if curl -f http://localhost:8081/health > /dev/null 2>&1; then
+              echo "✓ Frontend is healthy"
+              break
+            fi
+            if [ $i -eq 15 ]; then
+              echo "✗ Frontend health check failed"
+              docker logs web-admin-prod --tail 50
+              exit 1
+            fi
+            echo "Waiting for frontend... (attempt $i/15)"
+            sleep 2
+          done
+
+      - name: Show container logs
+        if: always()
+        run: |
+          echo "=== Backend Logs ==="
+          docker logs backend-services-prod --tail 100 || true
+          echo "=== Frontend Logs ==="
+          docker logs web-admin-prod --tail 50 || true
+
+      - name: Cleanup old images
+        if: success()
+        run: |
+          docker image prune -f
+          echo "✓ Production deployment successful!"
+
+      - name: Rollback on failure
+        if: failure()
+        working-directory: ./deploy
+        run: |
+          echo "⚠ Deployment failed, attempting rollback..."
+          docker compose -f docker-compose.prod.yml down
+          
+          if docker image inspect backend-services:prod-backup > /dev/null 2>&1; then
+            echo "Restoring backup images..."
+            docker tag backend-services:prod-backup backend-services:prod
+            docker tag web-admin:prod-backup web-admin:prod
+            docker compose -f docker-compose.prod.yml up -d
+            echo "Rollback completed. Please investigate the issue."
+          else
+            echo "No backup available. Please check logs and redeploy after fixing issues."
+          fi

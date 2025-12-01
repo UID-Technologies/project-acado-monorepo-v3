@@ -1,0 +1,53 @@
+/* Toolbar */
+.rbc-toolbar {
+  @apply bg-gray-100 dark:bg-gray-800 dark:text-white p-2 border-b border-gray-300 dark:border-gray-700;
+}
+
+/* Events */
+.rbc-event {
+  @apply bg-indigo-600 text-white rounded px-2 py-1;
+}
+
+/* Month view */
+.rbc-month-view {
+  @apply border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white;
+}
+
+/* Day background hover */
+.rbc-day-bg:hover {
+  @apply bg-gray-200 dark:bg-gray-950;
+}
+
+.rbc-today {
+  @apply bg-gray-200 dark:bg-gray-950;
+}
+.rbc-off-range-bg {
+  @apply bg-gray-100 dark:bg-gray-950;
+}
+/* Off-range days */
+/* Light mode styles */
+.rbc-day-bg.rbc-off-range-bg {
+  background-color: #fafafa;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #d4d4d4 0,
+    #f0f0f0 1px,
+    transparent 0,
+    transparent 50%
+  );
+  background-size: 10px 10px;
+}
+
+/* Dark mode styles */
+.dark .rbc-day-bg.rbc-off-range-bg {
+  background-color: #0a0a0a;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #1a1a1a 0,
+    #737373 2px,
+    transparent 0,
+    transparent 50%
+  );
+  background-size: 10px 10px;
+}
+

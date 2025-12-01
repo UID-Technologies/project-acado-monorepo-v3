@@ -1,0 +1,333 @@
+@import "../assets/styles/app.css";
+
+ul.ver-nav li a.active::before {
+    content: "";
+    border-width: 0.5rem 0px 0.5rem 1rem;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-image: initial;
+    border-right-style: initial;
+    border-right-color: initial;
+    border-left-style: solid;
+    border-left-color: var(--primary);
+    position: absolute;
+    left: 0px;
+}
+
+ul.ver-nav li a.active {
+    color: var(--primary);
+}
+
+ul.ver-nav li a:hover {
+    color: var(--primary);
+}
+
+input.checkbox-card[type="checkbox"]:checked+span {
+    display: block;
+}
+
+input.checkbox-card[type="checkbox"]:not(:checked)+span {
+    border: none;
+}
+
+input.checkbox-card[type="checkbox"]:not(:checked)+span span {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+input.checkbox-card[type="checkbox"]:not(:checked)+span span svg {
+    fill: rgba(255, 255, 255, 0.5);
+}
+
+/* Styling for CKEditor lists with data-list attribute */
+li[data-list="bullet"] {
+    list-style-type: disc;
+    /* Ensure bullet points */
+    margin-left: 20px;
+}
+
+li[data-list="number"] {
+    list-style-type: decimal;
+    /* Ensure number points */
+    margin-left: 20px;
+}
+
+/* ordered type  */
+li[data-list="ordered"] {
+    list-style-type: decimal;
+    /* Ensure number points */
+    margin-left: 20px;
+}
+
+.whatyoushoulddoit-section .whatyoushoulddoit-container .whatyoushoulddoit-inner .left-section img,
+.whatisrequiredtoenroll-section .whatisrequiredtoenroll-container .whatisrequiredtoenroll-inner .left-section img {
+    object-fit: contain !important;
+}
+
+ol {
+    list-style-type: decimal;
+}
+
+.swiper .swiper-scrollbar {
+    margin-top: 50px !important;
+}
+
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid white !important;
+    outline: 1px solid black !important;
+}
+
+.swiper-pagination-bullet-active {
+    background: var(--primary) !important;
+    width: 30px !important;
+    border-radius: 10px !important;
+    border: none !important;
+    outline: none !important;
+}
+
+
+/* .menu-collapse ul {
+    opacity: 1 !important;
+    height: auto !important;
+} */
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.side-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;
+    /* Hide scrollbar for Firefox */
+}
+
+
+.swal2-title {
+    color: #000 !important;
+}
+
+
+/* Base container */
+.htmlContent {
+    line-height: 1.7;
+    font-size: 1rem;
+    color: #374151;
+    /* text-gray-700 */
+    word-break: break-word;
+}
+
+/* Dark mode support */
+.dark .htmlContent {
+    color: #d1d5db;
+    /* text-gray-300 */
+}
+
+/* Headings */
+.htmlContent h1,
+.htmlContent h2,
+.htmlContent h3,
+.htmlContent h4,
+.htmlContent h5,
+.htmlContent h6 {
+    font-weight: 700;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    color: var(--primary) !important;
+}
+
+.dark .htmlContent h1,
+.dark .htmlContent h2,
+.dark .htmlContent h3,
+.dark .htmlContent h4,
+.dark .htmlContent h5,
+.dark .htmlContent h6 {
+    color: var(--primary) !important;
+}
+
+.htmlContent h1 {
+    font-size: 2rem;
+}
+
+.htmlContent h2 {
+    font-size: 1.5rem;
+}
+
+.htmlContent h3 {
+    font-size: 1.25rem;
+}
+
+.htmlContent h4 {
+    font-size: 1.125rem;
+}
+
+.htmlContent h5,
+.htmlContent h6 {
+    font-size: 1rem;
+}
+
+/* Paragraphs */
+.htmlContent p {
+    margin-bottom: 1em;
+}
+
+/* Links */
+.htmlContent a {
+    color: #2563eb;
+    /* blue-600 */
+    text-decoration: underline;
+}
+
+.htmlContent a:hover {
+    color: #1d4ed8;
+    /* blue-700 */
+}
+
+/* Lists */
+.htmlContent ul,
+.htmlContent ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.htmlContent li {
+    margin-bottom: 0.4em;
+}
+
+.htmlContent ul {
+    list-style-type: disc;
+}
+
+.htmlContent ol {
+    list-style-type: decimal;
+}
+
+/* Images */
+.htmlContent img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1em 0;
+}
+
+/* Tables */
+.htmlContent table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.95rem;
+}
+
+.htmlContent th,
+.htmlContent td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.htmlContent th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+.dark .htmlContent th {
+    background-color: #374151;
+    /* gray-700 */
+}
+
+.dark .htmlContent td {
+    border-color: #4b5563;
+    /* gray-600 */
+}
+
+/* Blockquotes */
+.htmlContent blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1em;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1em 0;
+}
+
+.dark .htmlContent blockquote {
+    border-color: #60a5fa;
+    color: #9ca3af;
+}
+
+/* Code blocks */
+.htmlContent code,
+.htmlContent pre {
+    font-family: 'Courier New', monospace;
+    background-color: #f3f4f6;
+    color: #111827;
+    border-radius: 4px;
+}
+
+.htmlContent code {
+    padding: 2px 4px;
+}
+
+.htmlContent pre {
+    padding: 1em;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+.dark .htmlContent code,
+.dark .htmlContent pre {
+    background-color: #1f2937;
+    /* gray-800 */
+    color: #e5e7eb;
+}
+
+/* Horizontal rules */
+.htmlContent hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 2em 0;
+}
+
+.dark .htmlContent hr {
+    border-top-color: #4b5563;
+}
+
+/* Tables inside divs */
+.htmlContent>div>table {
+    margin: 1em 0;
+}
+
+/* Iframes / videos */
+.htmlContent iframe,
+.htmlContent video {
+    max-width: 100%;
+    border-radius: 0.5rem;
+    margin: 1em 0;
+}
+
+/* Headings spacing fix for first element */
+.htmlContent> :first-child {
+    margin-top: 0;
+}
+
+html.light .MsoNormal span {
+    color: #000 !important;
+}
+
+html.light p strong span {
+    color: #000 !important;
+}
+
+html.light p span {
+    color: #000 !important;
+}
