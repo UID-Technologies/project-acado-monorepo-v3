@@ -27,8 +27,9 @@ const ApplicationsOverview: React.FC = () => {
   const { criteriaConfigs } = useApplicationProcess();
 
   const formsWithApplications = useMemo(() => {
+    if (!forms || !Array.isArray(forms)) return [];
     return forms.map((form) => {
-      const formApplications = applications.filter((app) => app.formId === form.id);
+      const formApplications = (applications || []).filter((app) => app.formId === form.id);
       const averageScore =
         formApplications.length > 0
           ? Math.round(
@@ -43,14 +44,14 @@ const ApplicationsOverview: React.FC = () => {
         applicationCount: formApplications.length,
         averageMatchScore: averageScore,
         hasMatchingCriteria: form.courseIds?.some((courseId) =>
-          criteriaConfigs.some((config) => config.courseId === courseId),
+          (criteriaConfigs || []).some((config) => config.courseId === courseId),
         ),
       };
     });
   }, [applications, forms, criteriaConfigs]);
 
   const getCourseStats = (courseId: string) => {
-    const courseApplications = applications.filter((app) => app.courseId === courseId);
+    const courseApplications = (applications || []).filter((app) => app.courseId === courseId);
     return {
       total: courseApplications.length,
       avgScore:
@@ -98,7 +99,7 @@ const ApplicationsOverview: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Total Applications</p>
                 <p className="text-3xl font-bold text-primary">{stats.totalApplications}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Across {forms.length} forms
+                  Across {(forms || []).length} forms
                 </p>
               </div>
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
@@ -233,7 +234,7 @@ const ApplicationsOverview: React.FC = () => {
           <div className="grid gap-4">
             {courses.map((course) => {
               const courseStats = getCourseStats(course.id);
-              const hasConfig = criteriaConfigs.some((config) => config.courseId === course.id);
+              const hasConfig = (criteriaConfigs || []).some((config) => config.courseId === course.id);
 
               return (
                 <Card key={course.id}>

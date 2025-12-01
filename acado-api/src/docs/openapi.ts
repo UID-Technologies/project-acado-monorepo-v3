@@ -4,7 +4,7 @@ import { OpenAPIV3_1 } from 'openapi-types';
 const spec: OpenAPIV3_1.Document = {
   openapi: '3.0.3',
   info: { 
-    title: 'Akedo Form Builder API', 
+    title: 'Akado API', 
     version: '1.0.0',
     description: 'Comprehensive API for managing application forms, master fields, categories, universities, courses, student applications, engagement builder features (wall posts, community posts, reels, events, scholarships), and user authentication with JWT tokens. Supports form creation, field configuration, university/course management, complete application lifecycle tracking, and engagement builder content management.'
   },

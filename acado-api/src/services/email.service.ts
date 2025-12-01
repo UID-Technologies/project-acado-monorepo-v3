@@ -1,7 +1,7 @@
 // src/services/email.service.ts
 import nodemailer, { type Transporter, type SentMessageInfo } from 'nodemailer';
 import { loadEnv } from '../config/env.js';
-import logger from '../utils/logger.js';
+import { logger } from '../config/logger.js';
 
 export type EmailTemplate = 'admin_invitation' | 'forgot_password' | 'welcome';
 

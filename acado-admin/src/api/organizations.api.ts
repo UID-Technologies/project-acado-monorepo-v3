@@ -175,13 +175,23 @@ export interface UpdateOrganizationContactsResponse {
 
 export const organizationsApi = {
   async listPublic(): Promise<Organization[]> {
-    const response = await axiosInstance.get<ListOrganizationsResponse>('/organizations/public');
-    return response.data.organizations;
+    const response = await axiosInstance.get('/organizations/public');
+    // Backend returns { organizations: [] } which gets unwrapped by interceptor
+    // After unwrapping, response.data = { organizations: [] }
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+    return response.data?.organizations || [];
   },
 
   async list(): Promise<Organization[]> {
-    const response = await axiosInstance.get<ListOrganizationsResponse>('/organizations');
-    return response.data.organizations;
+    const response = await axiosInstance.get('/organizations');
+    // Backend returns { organizations: [] } which gets unwrapped by interceptor
+    // After unwrapping, response.data = { organizations: [] }
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+    return response.data?.organizations || [];
   },
 
   async create(payload: CreateOrganizationPayload): Promise<CreateOrganizationResponse> {

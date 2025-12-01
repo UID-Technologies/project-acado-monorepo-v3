@@ -24,6 +24,7 @@ import { CourseType } from "@/types/courseType";
 import AddEditCourseTypeDialog from "@/components/courseTypes/AddEditCourseTypeDialog";
 import { courseTypesApi, UpsertCourseTypePayload } from "@/api/courseTypes.api";
 import { toast } from "@/hooks/use-toast";
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 const CourseTypes = () => {
   const [types, setTypes] = useState<CourseType[]>([]);
@@ -41,7 +42,7 @@ const CourseTypes = () => {
       console.error('Failed to load course types', error);
       toast({
         title: 'Failed to load course types',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -61,7 +62,7 @@ const CourseTypes = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to add course type',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;
@@ -78,7 +79,7 @@ const CourseTypes = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to update course type',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;
@@ -94,7 +95,7 @@ const CourseTypes = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to delete course type',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -110,7 +111,7 @@ const CourseTypes = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to update status',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     }

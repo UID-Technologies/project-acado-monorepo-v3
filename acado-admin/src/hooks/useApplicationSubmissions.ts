@@ -147,7 +147,8 @@ export const useApplicationSubmissions = () => {
       
       // Fetch applications from API with enrichment enabled
       const response = await applicationsApi.getApplications({ enrich: true });
-      const appsData = response.applications || [];
+      // Backend returns array directly (after axios interceptor unwraps it)
+      const appsData = Array.isArray(response) ? response : (response?.applications || []);
       
       // Transform backend applications to frontend format
       const parsedApps = appsData.map((app: any) => {

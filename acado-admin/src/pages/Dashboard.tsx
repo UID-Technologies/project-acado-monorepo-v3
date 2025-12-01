@@ -13,13 +13,13 @@ const Dashboard = () => {
   const { applications, stats: appStats } = useApplicationSubmissions();
   const { forms, universities, courses } = useFormsData();
 
-  const liveForms = forms.filter(f => f.isLaunched).length;
-  const totalForms = forms.length;
+  const liveForms = (forms || []).filter(f => f.isLaunched).length;
+  const totalForms = (forms || []).length;
 
   const stats = [
     {
       title: 'Total Universities',
-      value: universities.length.toString(),
+      value: (universities || []).length.toString(),
       change: '+3 this month',
       icon: Building2,
       color: 'text-primary',
@@ -28,7 +28,7 @@ const Dashboard = () => {
     },
     {
       title: 'Active Courses',
-      value: courses.length.toString(),
+      value: (courses || []).length.toString(),
       change: '+12 this week',
       icon: BookOpen,
       color: 'text-secondary',
@@ -229,13 +229,13 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="space-y-4">
-              {applications.slice(0, 5).map((app) => (
+              {(applications || []).slice(0, 5).map((app) => (
                 <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                   <div className="flex-1">
                     <h4 className="font-medium">{app.applicantName}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {courses.find(c => c.id === app.courseId)?.name || 'Unknown Course'} • 
-                      {' '}{universities.find(u => u.id === app.universityId)?.name || 'Unknown University'}
+                      {(courses || []).find(c => c.id === app.courseId)?.name || 'Unknown Course'} • 
+                      {' '}{(universities || []).find(u => u.id === app.universityId)?.name || 'Unknown University'}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">

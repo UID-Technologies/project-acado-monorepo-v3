@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ApplicationForm, University } from '@/types/application';
-import { ElmsCourse } from '@/api/universities.api';
-import { formsApi, universitiesApi } from '@/api';
+import { formsApi, universitiesApi, coursesApi } from '@/api';
 import { useToast } from './use-toast';
 
 export const useFormsData = () => {
   const [forms, setForms] = useState<ApplicationForm[]>([]);
   const [universities, setUniversities] = useState<University[]>([]);
-  const [courses, setCourses] = useState<ElmsCourse[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const { toast } = useToast();
@@ -24,30 +23,15 @@ export const useFormsData = () => {
         console.log('📝 Fetching forms...');
         const formsData = await formsApi.getForms();
         console.log('✅ Forms fetched:', formsData);
-        setForms(formsData.forms as unknown as ApplicationForm[]);
+        // Backend returns array directly
+        setForms((formsData || []) as unknown as ApplicationForm[]);
         
-        // Fetch courses (optional - if fails, continue with empty array)
+        // Fetch courses from acado-api (optional - if fails, continue with empty array)
         try {
-          console.log('📚 Fetching courses...');
-          const coursesResponse = await universitiesApi.getCourses();
-          console.log('✅ Courses fetched:', coursesResponse);
-          
-          // Extract courses from the new API response structure
-          const coursesData = coursesResponse?.data?.programs?.data || [];
-          console.log('📚 Extracted courses:', coursesData.length, 'courses');
-          
-          // Filter for active courses on client side
-          const activeCourses = coursesData
-            .filter((course: any) => 
-              course.status === 'Active' || course.status === 'active'
-            )
-            .map((course: any) => ({
-              ...course,
-              // Add universityId alias if not present
-              universityId: course.universityId || course.organization_id || course.university_id
-            }));
-          console.log('📚 Active courses:', activeCourses.length);
-          setCourses(activeCourses);
+          console.log('📚 Fetching courses from acado-api...');
+          const coursesData = await coursesApi.getCourses({ isActive: true });
+          console.log('✅ Courses fetched:', coursesData.length, 'courses');
+          setCourses(coursesData || []);
         } catch (courseErr) {
           console.warn('⚠️ Failed to fetch courses (continuing with empty list):', courseErr);
           setCourses([]); // Set empty array if courses fail to load
@@ -55,10 +39,10 @@ export const useFormsData = () => {
         
         // Fetch universities if available
         try {
-          const universitiesResponse = await universitiesApi.getUniversities({ page: 1, pageSize: 100 });
-          if (universitiesResponse?.data?.length) {
+          const universitiesData = await universitiesApi.getUniversities();
+          if (universitiesData && universitiesData.length > 0) {
             setUniversities(
-              universitiesResponse.data.map((uni) => ({
+              universitiesData.map((uni: any) => ({
                 id: uni.id,
                 name: uni.name,
                 country: uni.location?.country || '',

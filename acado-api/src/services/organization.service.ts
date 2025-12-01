@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto';
 import mongoose, { Types } from 'mongoose';
 import OrganizationModel, { type Organization as OrganizationEntity } from '../models/Organization.js';
 import User, { type UserDocument } from '../models/User.js';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 import type { CreateOrganizationInput } from '../schemas/organization.schema.js';
 

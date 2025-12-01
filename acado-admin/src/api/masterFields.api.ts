@@ -117,7 +117,8 @@ export const masterFieldsApi = {
    */
   getMasterFields: async (): Promise<MasterField[]> => {
     const response = await axiosInstance.get('/masterFields');
-    return response.data;
+    // Backend returns array directly (after axios interceptor unwraps)
+    return Array.isArray(response.data) ? response.data : [];
   },
 
   /**
@@ -210,7 +211,8 @@ export const masterFieldsApi = {
    */
   getCategories: async (): Promise<Category[]> => {
     const response = await axiosInstance.get('/masterCategories');
-    return response.data;
+    // Backend returns array directly (after axios interceptor unwraps)
+    return Array.isArray(response.data) ? response.data : [];
   },
 
   /**

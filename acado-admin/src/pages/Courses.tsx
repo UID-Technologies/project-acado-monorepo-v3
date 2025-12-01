@@ -41,6 +41,7 @@ import { courseLevelsApi } from '@/api/courseLevels.api';
 import { courseTypesApi } from '@/api/courseTypes.api';
 import { learningOutcomesApi } from '@/api/learningOutcomes.api';
 import { universitiesApi, UniversitySummary } from '@/api/universities.api';
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const Courses = () => {
         courseCategoriesApi.list({ includeInactive: true }),
         courseLevelsApi.list({ includeInactive: true }),
         courseTypesApi.list({ includeInactive: true }),
-        universitiesApi.getUniversities({ page: 1, pageSize: 200 }),
+        universitiesApi.getUniversities(),
         learningOutcomesApi.list({ includeInactive: true }),
       ]);
 
@@ -92,12 +93,13 @@ const Courses = () => {
       setCategories(categoryList);
       setLevels(levelList);
       setTypes(typeList);
-      setOrganizations(universitiesRes.data ?? []);
+      // Backend returns array directly
+      setOrganizations(universitiesRes ?? []);
       setLearningOutcomes(outcomeList);
     } catch (error: any) {
       toast({
         title: 'Failed to load courses',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -114,7 +116,7 @@ const Courses = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to delete course',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -137,7 +139,7 @@ const Courses = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to update status',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     }
@@ -171,7 +173,7 @@ const Courses = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to duplicate course',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     }
@@ -192,7 +194,7 @@ const Courses = () => {
     } catch (error: any) {
       toast({
         title: 'Failed to assign outcomes',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;

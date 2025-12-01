@@ -21,6 +21,7 @@ import { AddSubcategoryDialog } from '@/components/masterFields/AddSubcategoryDi
 import { AddFieldDialog } from '@/components/masterFields/AddFieldDialog';
 import { FieldCategory, ApplicationField } from '@/types/application';
 import { useToast } from '@/hooks/use-toast';
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 const MasterFields = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,7 +120,7 @@ const MasterFields = () => {
     } catch (error: any) {
       toast({
         title: "Failed to create category",
-        description: error?.response?.data?.error || error?.message || "An error occurred while creating the category.",
+        description: extractErrorMessage(error, "An error occurred while creating the category."),
         variant: "destructive",
       });
     }
@@ -136,7 +137,7 @@ const MasterFields = () => {
     } catch (error: any) {
       toast({
         title: "Failed to update category",
-        description: error?.response?.data?.error || error?.message || "An error occurred while updating the category.",
+        description: extractErrorMessage(error, "An error occurred while updating the category."),
         variant: "destructive",
       });
     }
@@ -153,7 +154,7 @@ const MasterFields = () => {
     } catch (error: any) {
       toast({
         title: "Failed to create subcategory",
-        description: error?.response?.data?.error || error?.message || "An error occurred while creating the subcategory.",
+        description: extractErrorMessage(error, "An error occurred while creating the subcategory."),
         variant: "destructive",
       });
     }
@@ -170,7 +171,7 @@ const MasterFields = () => {
     } catch (error: any) {
       toast({
         title: "Failed to create field",
-        description: error?.response?.data?.error || error?.message || "An error occurred while creating the field.",
+        description: extractErrorMessage(error, "An error occurred while creating the field."),
         variant: "destructive",
       });
     }
@@ -188,7 +189,7 @@ const MasterFields = () => {
       } catch (error: any) {
         toast({
           title: "Failed to delete category",
-          description: error?.response?.data?.error || error?.message || "An error occurred while deleting the category.",
+          description: extractErrorMessage(error, "An error occurred while deleting the category."),
           variant: "destructive",
         });
       }
@@ -207,7 +208,7 @@ const MasterFields = () => {
       } catch (error: any) {
         toast({
           title: "Failed to delete subcategory",
-          description: error?.response?.data?.error || error?.message || "An error occurred while deleting the subcategory.",
+          description: extractErrorMessage(error, "An error occurred while deleting the subcategory."),
           variant: "destructive",
         });
       }
@@ -226,7 +227,7 @@ const MasterFields = () => {
       } catch (error: any) {
         toast({
           title: "Failed to delete field",
-          description: error?.response?.data?.error || error?.message || "An error occurred while deleting the field.",
+          description: extractErrorMessage(error, "An error occurred while deleting the field."),
           variant: "destructive",
         });
       }

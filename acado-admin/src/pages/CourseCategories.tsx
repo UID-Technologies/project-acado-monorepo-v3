@@ -25,6 +25,7 @@ import { CourseCategory } from '@/types/courseCategory';
 import { AddEditCourseCategoryDialog } from '@/components/courseCategories/AddEditCourseCategoryDialog';
 import { toast } from '@/hooks/use-toast';
 import { courseCategoriesApi, UpsertCourseCategoryPayload } from '@/api/courseCategories.api';
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 export default function CourseCategories() {
   const [categories, setCategories] = useState<CourseCategory[]>([]);
@@ -42,9 +43,10 @@ export default function CourseCategories() {
       setCategories(data);
     } catch (error: any) {
       console.error('Failed to load course categories', error);
+      // Extract error message safely - handle both string and object errors
       toast({
         title: 'Failed to load categories',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -77,7 +79,7 @@ export default function CourseCategories() {
     } catch (error: any) {
       toast({
         title: 'Failed to add category',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: errorMessage,
         variant: 'destructive',
       });
       throw error;
@@ -99,7 +101,7 @@ export default function CourseCategories() {
     } catch (error: any) {
       toast({
         title: 'Failed to update category',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: errorMessage,
         variant: 'destructive',
       });
       throw error;
@@ -119,7 +121,7 @@ export default function CourseCategories() {
     } catch (error: any) {
       toast({
         title: 'Failed to delete category',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -141,7 +143,7 @@ export default function CourseCategories() {
     } catch (error: any) {
       toast({
         title: 'Failed to update status',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: errorMessage,
         variant: 'destructive',
       });
     }

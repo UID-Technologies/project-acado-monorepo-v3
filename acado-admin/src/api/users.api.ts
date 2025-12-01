@@ -7,19 +7,11 @@ export interface UsersListParams {
   status?: 'active' | 'inactive';
   universityId?: string;
   universityName?: string;
-  page?: number;
-  pageSize?: number;
+  // Removed: page, pageSize (pagination removed)
 }
 
-export interface UsersListResponse {
-  data: User[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-}
+// Backend returns array directly after axios interceptor unwraps
+export type UsersListResponse = User[];
 
 const normalizeUser = (user: any): User => ({
   id: user.id,
@@ -51,8 +43,7 @@ const buildQueryString = (params: UsersListParams = {}) => {
   if (params.status) searchParams.append('status', params.status);
   if (params.universityId) searchParams.append('universityId', params.universityId);
   if (params.universityName) searchParams.append('universityName', params.universityName);
-  if (params.page) searchParams.append('page', params.page.toString());
-  if (params.pageSize) searchParams.append('pageSize', params.pageSize.toString());
+  // Removed: page, pageSize (pagination removed)
   return searchParams.toString();
 };
 
@@ -60,17 +51,9 @@ export const usersApi = {
   async getUsers(params: UsersListParams = {}): Promise<UsersListResponse> {
     const query = buildQueryString(params);
     const response = await axiosInstance.get(`/users${query ? `?${query}` : ''}`);
-    return {
-      data: Array.isArray(response.data?.data)
-        ? response.data.data.map((user: any) => normalizeUser(user))
-        : [],
-      pagination: response.data?.pagination || {
-        page: params.page || 1,
-        pageSize: params.pageSize || 25,
-        total: Array.isArray(response.data?.data) ? response.data.data.length : 0,
-        totalPages: 1,
-      },
-    };
+    // Backend returns array directly (after axios interceptor unwraps)
+    const users = Array.isArray(response.data) ? response.data : [];
+    return users.map((user: any) => normalizeUser(user));
   },
 
   async getUser(userId: string): Promise<User> {
@@ -94,8 +77,8 @@ export const usersApi = {
 
   async bulkImportUsers(users: CreateUserPayload[]): Promise<User[]> {
     const response = await axiosInstance.post('/users/bulk', { users });
-    return Array.isArray(response.data?.data)
-      ? response.data.data.map((user: any) => normalizeUser(user))
-      : [];
+    // Backend returns { data: [...] } which gets unwrapped to array
+    const result = Array.isArray(response.data) ? response.data : (response.data?.data || []);
+    return result.map((user: any) => normalizeUser(user));
   },
 };

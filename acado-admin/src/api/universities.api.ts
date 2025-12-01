@@ -152,8 +152,6 @@ export interface UniversityListParams {
   organizationId?: string;
   parentInstitutionId?: string | null;
   isActive?: boolean;
-  page?: number;
-  pageSize?: number;
 }
 
 export interface UniversitySummary {
@@ -184,15 +182,8 @@ export interface UniversitySummary {
   updatedAt?: string;
 }
 
-export interface UniversityListResponse {
-  data: UniversitySummary[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    totalItems: number;
-    totalPages: number;
-  };
-}
+// Backend returns array directly after axios interceptor unwraps
+export type UniversityListResponse = UniversitySummary[];
 
 export interface UniversityCourseSummary {
   id: string;
@@ -212,10 +203,10 @@ export interface UniversityStatsResponse {
 
 export const universitiesApi = {
   /**
-   * Get all universities (paginated)
+   * Get all universities
    */
-  getUniversities: async (params?: UniversityListParams): Promise<UniversityListResponse> => {
-    const response = await axiosInstance.get<UniversityListResponse>('/universities', { params });
+  getUniversities: async (params?: UniversityListParams): Promise<UniversitySummary[]> => {
+    const response = await axiosInstance.get<UniversitySummary[]>('/universities', { params });
     return response.data;
   },
 

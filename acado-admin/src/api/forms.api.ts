@@ -81,26 +81,19 @@ export interface QueryFormsParams {
   universityId?: string;
   isActive?: boolean;
   search?: string;
-  page?: number;
-  limit?: number;
   sort?: string;
+  // Removed: page, limit (pagination removed)
 }
 
-export interface FormsListResponse {
-  forms: Form[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    pages: number;
-  };
-}
+// Backend returns array directly after axios interceptor unwraps
+export type FormsListResponse = Form[];
 
 export const formsApi = {
   // Get all forms with optional filters
   getForms: async (params?: QueryFormsParams): Promise<FormsListResponse> => {
     const response = await axiosInstance.get('/forms', { params });
-    return response.data;
+    // Backend returns array directly (after axios interceptor unwraps)
+    return Array.isArray(response.data) ? response.data : [];
   },
 
   // Get single form by ID

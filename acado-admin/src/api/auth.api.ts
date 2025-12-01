@@ -138,29 +138,32 @@ const normalizeUser = (rawUser: any): User => {
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    const { data } = await axiosInstance.post<AuthResponse>('/auth/login', credentials);
+    const response = await axiosInstance.post('/auth/login', credentials);
+    const data = response.data?.data || response.data; // Handle both wrapped and unwrapped responses
     return {
-      accessToken: data.accessToken ?? null,
-      expiresIn: data.expiresIn,
-      user: normalizeUser(data.user),
+      accessToken: data?.accessToken ?? null,
+      expiresIn: data?.expiresIn,
+      user: normalizeUser(data?.user),
     };
   },
 
   register: async (payload: RegisterData): Promise<AuthResponse> => {
-    const { data } = await axiosInstance.post<AuthResponse>('/auth/register', payload);
+    const response = await axiosInstance.post('/auth/register', payload);
+    const data = response.data?.data || response.data; // Handle both wrapped and unwrapped responses
     return {
-      accessToken: data.accessToken ?? null,
-      expiresIn: data.expiresIn,
-      user: normalizeUser(data.user),
+      accessToken: data?.accessToken ?? null,
+      expiresIn: data?.expiresIn,
+      user: normalizeUser(data?.user),
     };
   },
 
   refresh: async (): Promise<AuthResponse> => {
-    const { data } = await axiosInstance.post<AuthResponse>('/auth/refresh', {});
+    const response = await axiosInstance.post('/auth/refresh', {});
+    const data = response.data?.data || response.data; // Handle both wrapped and unwrapped responses
     return {
-      accessToken: data.accessToken ?? null,
-      expiresIn: data.expiresIn,
-      user: normalizeUser(data.user),
+      accessToken: data?.accessToken ?? null,
+      expiresIn: data?.expiresIn,
+      user: normalizeUser(data?.user),
     };
   },
 
@@ -169,12 +172,14 @@ export const authApi = {
   },
 
   getProfile: async (): Promise<User> => {
-    const { data } = await axiosInstance.get('/auth/profile');
+    const response = await axiosInstance.get('/auth/profile');
+    const data = response.data?.data || response.data; // Handle both wrapped and unwrapped responses
     return normalizeUser(data);
   },
 
   updateProfile: async (payload: { name?: string; email?: string }): Promise<User> => {
-    const { data } = await axiosInstance.put('/auth/profile', payload);
+    const response = await axiosInstance.put('/auth/profile', payload);
+    const data = response.data?.data || response.data; // Handle both wrapped and unwrapped responses
     return normalizeUser(data);
   },
 

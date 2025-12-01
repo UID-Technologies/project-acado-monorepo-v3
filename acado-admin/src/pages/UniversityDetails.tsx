@@ -142,9 +142,10 @@ const UniversityDetails = () => {
         const response = await usersApi.getUsers({
           userType: 'Admin',
           universityId,
-          pageSize: 100,
+          // Removed: pageSize (pagination removed)
         });
-        setAdmins(response.data);
+        // Backend returns array directly
+        setAdmins(response || []);
       } catch (error: any) {
         console.warn('Failed to fetch university admins', error);
         externalToast({

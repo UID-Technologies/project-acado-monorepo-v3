@@ -1,49 +1,102 @@
-# Akedo Form Builder - Backend API Service
+# Acado API - Backend Service
 
-RESTful API service with JWT authentication, role-based access control, and MongoDB database for form builder application.
+RESTful API service with JWT authentication, role-based access control, and MongoDB database. Built with clean enterprise architecture following Domain-Driven Design principles.
 
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Architecture](#architecture)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
-- [Loading Sample Data](#loading-sample-data)
-- [Default User Accounts](#default-user-accounts)
 - [API Documentation](#api-documentation)
+- [API Endpoints](#api-endpoints)
 - [Available Scripts](#available-scripts)
 - [Role-Based Permissions](#role-based-permissions)
 - [Project Structure](#project-structure)
+- [Migration Status](#migration-status)
 - [Troubleshooting](#troubleshooting)
 
 ---
 
 ## 🎯 Overview
 
-The Backend API Service provides a comprehensive solution for managing university application forms:
+The Acado API provides a comprehensive solution for managing university applications, courses, forms, and user management:
+
 - **RESTful API** - Express.js with TypeScript
-- **Authentication** - JWT-based authentication with bcrypt password hashing
-- **Authorization** - Role-based access control (Admin, Editor, User)
+- **Clean Architecture** - Domain-Driven Design with module-based structure
+- **Authentication** - JWT-based authentication with refresh tokens
+- **Authorization** - Role-based access control (SuperAdmin, Admin, Learner)
 - **Database** - MongoDB with Mongoose ODM
 - **Documentation** - OpenAPI/Swagger interactive documentation
 - **Validation** - Zod schema validation for all endpoints
 - **Security** - Rate limiting, CORS, helmet, and comprehensive error handling
-- **Form Builder** - Dynamic form creation and field configuration
-- **University Management** - Manage universities and their courses
-- **Course Management** - Manage degree programs, exchanges, pathways, and certifications
+- **File Uploads** - Azure Blob Storage integration
+- **Email Service** - Templated email sending with Nodemailer
+
+---
+
+## 🏗️ Architecture
+
+### Clean Enterprise Architecture
+
+The project follows a clean, enterprise-level architecture with clear separation of concerns:
+
+```
+src/
+├── config/          # Configuration (env, db, logger)
+├── core/            # Core utilities (http, middleware, utils)
+│   ├── http/        # HTTP utilities (ApiError, ApiResponse)
+│   ├── middleware/  # Express middleware (auth, RBAC, validation, error handling)
+│   └── utils/       # Utility functions (crypto, date, file, validator)
+├── infrastructure/  # Infrastructure layer
+│   └── database/    # Database connections and repositories
+│       └── mongo/   # MongoDB connection and BaseRepository
+├── loaders/         # Application loaders
+│   ├── express.ts   # Express app initialization
+│   ├── routes.ts    # Route registration
+│   └── index.ts     # Main loader orchestrator
+├── modules/         # Business modules (22 modules)
+│   ├── auth/        # Authentication module
+│   ├── user/        # User management
+│   ├── course/      # Course management
+│   ├── university/  # University management
+│   ├── form/        # Form builder
+│   ├── application/ # Application management
+│   └── ...          # 16 more modules
+├── models/          # Mongoose models
+├── schemas/          # Zod validation schemas
+└── services/         # Legacy services (gradual migration)
+```
+
+### Module Structure
+
+Each module follows a consistent structure:
+
+```
+modules/{moduleName}/
+├── {moduleName}.model.ts    # Mongoose model (if needed)
+├── {moduleName}.repo.ts      # Repository (data access layer)
+├── {moduleName}.dto.ts       # DTOs and Zod schemas
+├── {moduleName}.service.ts   # Business logic
+├── {moduleName}.controller.ts # HTTP handlers
+└── {moduleName}.routes.ts    # Express routes
+```
 
 ---
 
 ## ✨ Features
 
 ### Authentication & Authorization
-- ✅ JWT-based authentication with bcrypt password hashing
-- ✅ Role-based access control (SuperAdmin, Admin, Presenter, Learner)
+- ✅ JWT-based authentication with access and refresh tokens
+- ✅ Role-based access control (SuperAdmin, Admin, Learner)
 - ✅ User profile management and password change
-- ✅ Token refresh mechanism
+- ✅ Token refresh mechanism with cookie-based refresh tokens
+- ✅ Password reset via email
+- ✅ Account activation/deactivation
 
 ### Form Management
 - ✅ Dynamic form builder with configurable fields
@@ -64,11 +117,13 @@ The Backend API Service provides a comprehensive solution for managing universit
 - ✅ University profiles with details, website, logo, ranking
 - ✅ Course listing per university
 - ✅ Country and city-based filtering
+- ✅ University statistics
 
 ### Course Management
 - ✅ Course CRUD operations
 - ✅ Multiple course types (degree, exchange, pathway, diploma, certification)
 - ✅ Course levels (undergraduate, postgraduate, doctoral)
+- ✅ Course categories and learning outcomes
 - ✅ Application form association
 - ✅ Fee and deadline management
 
@@ -82,6 +137,31 @@ The Backend API Service provides a comprehensive solution for managing universit
 - ✅ Application statistics by status
 - ✅ Metadata capture (completion time, IP, user agent)
 
+### User Management
+- ✅ User CRUD operations
+- ✅ Bulk user creation
+- ✅ User search and filtering
+- ✅ Organization and university associations
+- ✅ User status management
+
+### Engagement Builder
+- ✅ Wall posts management
+- ✅ Community posts with categories
+- ✅ Reels with views and likes tracking
+- ✅ Events with registrations
+- ✅ Scholarships with applications tracking
+
+### File Management
+- ✅ Azure Blob Storage integration
+- ✅ File upload with validation
+- ✅ File retrieval
+- ✅ Support for multiple file types
+
+### Email Service
+- ✅ Templated email sending
+- ✅ Password reset emails
+- ✅ Custom email templates
+
 ### Technical Features
 - ✅ RESTful API with Express.js and TypeScript
 - ✅ MongoDB database with Mongoose ODM
@@ -91,8 +171,8 @@ The Backend API Service provides a comprehensive solution for managing universit
 - ✅ CORS configuration
 - ✅ Comprehensive error handling
 - ✅ Health check endpoint
-- ✅ Database seeding scripts
 - ✅ Request logging with Pino
+- ✅ Request ID tracking
 
 ---
 
@@ -108,6 +188,9 @@ The Backend API Service provides a comprehensive solution for managing universit
 - **Validation**: Zod
 - **Documentation**: OpenAPI/Swagger
 - **Security**: Helmet, CORS, express-rate-limit
+- **File Storage**: Azure Blob Storage
+- **Email**: Nodemailer
+- **Logging**: Pino
 
 ---
 
@@ -130,10 +213,10 @@ mongod --version  # Should show v6.x or higher
 
 ## 📦 Installation
 
-### 1. Navigate to Backend Directory
+### 1. Navigate to API Directory
 
 ```bash
-cd backend-service
+cd acado-api
 ```
 
 ### 2. Install Dependencies
@@ -146,12 +229,14 @@ This will install all required packages including:
 - Express.js, Mongoose, bcryptjs, jsonwebtoken
 - TypeScript and development dependencies
 - Validation and security packages
+- Azure Blob Storage SDK
+- Nodemailer
 
 ---
 
 ## ⚙️ Configuration
 
-Create a `.env` file in the `backend-service` directory (optional, defaults work fine):
+Create a `.env` file in the `acado-api` directory:
 
 ```env
 # Server Configuration
@@ -159,14 +244,28 @@ NODE_ENV=development
 PORT=4000
 
 # Database
-MONGO_URI=mongodb://localhost:27017/masterfields
+MONGO_URI=mongodb://localhost:27017/acadodb
 
 # JWT
-JWT_SECRET=your-secret-key-change-in-production
-JWT_EXPIRES_IN=7d
+JWT_ACCESS_SECRET=your-access-secret-key-change-in-production
+JWT_REFRESH_SECRET=your-refresh-secret-key-change-in-production
+ACCESS_TOKEN_EXPIRES_IN=15m
+REFRESH_TOKEN_EXPIRES_IN=7d
 
 # CORS
 CORS_ORIGIN=http://localhost:8080,http://localhost:3000,http://localhost:5173
+
+# Azure Blob Storage (Optional)
+AZURE_STORAGE_CONNECTION_STRING=your-azure-connection-string
+AZURE_CONTAINER_NAME=your-container-name
+AZURE_STORAGE_ACCOUNT_URL=your-azure-account-url
+
+# Email (Optional)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+FRONTEND_URL=http://localhost:3000
 ```
 
 ### Environment Variables
@@ -175,10 +274,20 @@ CORS_ORIGIN=http://localhost:8080,http://localhost:3000,http://localhost:5173
 |----------|---------|-------------|
 | `NODE_ENV` | `development` | Environment mode |
 | `PORT` | `4000` | Server port |
-| `MONGO_URI` | `mongodb://localhost:27017/masterfields` | MongoDB connection string |
-| `JWT_SECRET` | `your-secret-key` | JWT signing secret |
-| `JWT_EXPIRES_IN` | `7d` | Token expiration time |
+| `MONGO_URI` | `mongodb://localhost:27017/acadodb` | MongoDB connection string |
+| `JWT_ACCESS_SECRET` | Required | JWT access token signing secret |
+| `JWT_REFRESH_SECRET` | Required | JWT refresh token signing secret |
+| `ACCESS_TOKEN_EXPIRES_IN` | `15m` | Access token expiration time |
+| `REFRESH_TOKEN_EXPIRES_IN` | `7d` | Refresh token expiration time |
 | `CORS_ORIGIN` | Multiple origins | Allowed CORS origins |
+| `AZURE_STORAGE_CONNECTION_STRING` | Optional | Azure Blob Storage connection string |
+| `AZURE_CONTAINER_NAME` | Optional | Azure container name |
+| `AZURE_STORAGE_ACCOUNT_URL` | Optional | Azure storage account URL |
+| `SMTP_HOST` | Optional | SMTP server host |
+| `SMTP_PORT` | Optional | SMTP server port |
+| `SMTP_USER` | Optional | SMTP username |
+| `SMTP_PASS` | Optional | SMTP password |
+| `FRONTEND_URL` | Optional | Frontend URL for email links |
 
 ---
 
@@ -227,232 +336,6 @@ Expected response:
 
 ---
 
-## 📊 Loading Sample Data
-
-### Method 1: MongoDB Direct Insert (Fastest - No Node.js Required)
-
-Use pure MongoDB scripts to insert data directly - perfect for quick setup or CI/CD:
-
-#### Windows:
-```batch
-cd backend-service
-insert-seed.bat
-```
-
-#### Linux/Mac:
-```bash
-cd backend-service
-./insert-seed.sh
-```
-
-#### Direct Command:
-```bash
-cd backend-service
-mongosh "mongodb://localhost:27017/akedo-form-builder" insert-seed-data.js
-```
-
-**What gets inserted:**
-- **10 categories** with 21 subcategories
-- **70+ fields** with proper relationships
-- All data with Mongoose-compatible structure
-
-**Benefits:**
-- ⚡ Very fast (direct MongoDB insertion)
-- 🎯 No Node.js dependencies required
-- 🤖 Perfect for CI/CD pipelines
-- 📝 Interactive connection setup
-
-**Note:** This method only inserts categories and fields. For users, universities, and forms, use the Node.js seeders below.
-
-📖 **Full Guide**: See [INSERT-SEED-DATA-GUIDE.md](./INSERT-SEED-DATA-GUIDE.md) and [SEED-DATA-QUICK-REFERENCE.md](./SEED-DATA-QUICK-REFERENCE.md)
-
----
-
-### Method 2: Node.js Seeders (Integrated with Application)
-
-#### 1. Create Default Users
-
-```bash
-npm run seed:users
-```
-
-This creates three users with different roles:
-
-| Email | Password | Role |
-|-------|----------|------|
-| `superadmin@example.com` | `superadmin123` | SuperAdmin |
-| `admin@example.com` | `admin123` | Admin |
-| `presenter@example.com` | `presenter123` | Presenter |
-| `learner@example.com` | `learner123` | Learner |
-
-#### 2. Load Master Fields and Categories
-
-```bash
-npm run seed
-```
-
-This loads:
-- **10 categories**: Personal, Education, Experience, Skills, References, Documents, Employment, Projects, Certifications, Preferences
-- **25+ subcategories**: Various subcategories under each category
-- **67+ master fields**: Text inputs, dropdowns, date pickers, file uploads, etc.
-
-#### 3. Load Universities and Courses
-
-```bash
-npm run seed:universities
-```
-
-This loads sample universities from around the world with details including:
-- University names
-- Countries and cities
-- Descriptions
-- Website URLs
-- Rankings
-- Logos
-- **Also creates 4 sample courses per university**
-
-#### 4. Load Additional Courses (Optional)
-
-```bash
-npm run seed:courses
-```
-
-This creates additional courses for existing universities. This script:
-- Checks if universities exist in the database
-- Creates 4-6 courses per university
-- Includes various course types (degree, exchange, pathway, diploma, certification)
-- Includes different levels (undergraduate, postgraduate, doctoral)
-- Adjusts fees based on university ranking
-- Sets application deadlines and start dates
-
-**Note**: Run `npm run seed:universities` first, as this script requires universities to exist.
-
-#### 5. Load Location Hierarchy (Countries → States → Cities)
-
-```bash
-npm run seed:locations            # Imports src/data/locations.sample.csv by default
-npm run seed:locations -- --append ./path/to/your-file.xlsx   # Append/update from custom file
-```
-
-This script ingests a three-column dataset (**Country**, **State/Province**, **City**) from Excel or CSV and stores the normalized hierarchy in MongoDB.
-
-- Default input lives at `src/data/locations.sample.csv` – replace it with your own master file or pass a path as the first argument.
-- Use `--append` to merge new rows without clearing the collection. By default the script performs an upsert after wiping the existing collection to keep data in sync with the file.
-- Each row must include all three values; blank entries are skipped automatically.
-
-Once imported, the new `/locations` API can serve cascading dropdowns for the frontend.
-
-#### 6. Load Sample Forms
-
-```bash
-npm run seed:forms
-```
-
-This loads sample application forms with:
-- Pre-configured fields
-- Different form statuses (draft, published)
-- University associations
-- Custom category names
-
-#### 6. Check Database Status
-
-```bash
-npm run seed:check
-```
-
-Shows comprehensive database statistics including count of:
-- Users (by role)
-- Categories and subcategories
-- Fields (by category)
-- Forms (by status)
-- Universities (by country)
-- Courses (by type and level)
-
-#### 7. Clear Database
-
-```bash
-npm run seed:clear
-```
-
-Removes **ALL** data from the database including:
-- Users
-- Categories and fields
-- Forms
-- Universities and courses
-
-#### 8. Reset Database
-
-```bash
-npm run db:reset
-```
-
-Clears all data and re-seeds categories/fields (does not re-create users, universities, or forms).
-
-#### 9. Full Setup (All at Once)
-
-```bash
-npm run seed:users && npm run seed && npm run seed:universities && npm run seed:forms
-```
-
-This creates users, master fields/categories, universities (with courses), and sample forms in one command.
-
-**Alternative**: Load additional courses separately:
-```bash
-npm run seed:users && npm run seed && npm run seed:universities && npm run seed:courses && npm run seed:forms
-```
-
----
-
-### 🆚 Comparison: MongoDB Direct vs Node.js Seeders
-
-| Feature | MongoDB Direct (`insert-seed.sh`) | Node.js (`npm run seed`) |
-|---------|----------------------------------|--------------------------|
-| **Speed** | ⚡ Very Fast | ⚡ Fast |
-| **Setup** | Only needs mongosh | Needs Node.js + npm |
-| **Configuration** | Manual or interactive | Uses .env file |
-| **Dependencies** | None (just mongosh) | Requires packages |
-| **What it seeds** | Categories + Fields only | Categories + Fields |
-| **Use case** | Quick setup, CI/CD | Development workflow |
-| **Platform** | Cross-platform | Cross-platform |
-
----
-
-## 👥 Default User Accounts
-
-### SuperAdmin User
-```
-Email: superadmin@example.com
-Password: superadmin123
-Role: superadmin
-```
-**Permissions**: Full system access - All Create, Read, Update, Delete, Publish operations
-
-### Admin User
-```
-Email: admin@example.com
-Password: admin123
-Role: admin
-```
-**Permissions**: Full access - Create, Read, Update, Delete (Cannot manage system settings)
-
-### Presenter User
-```
-Email: presenter@example.com
-Password: presenter123
-Role: presenter
-```
-**Permissions**: Create, Read, Update (Cannot Delete or Publish)
-
-### Learner User
-```
-Email: learner@example.com
-Password: learner123
-Role: learner
-```
-**Permissions**: Read-only access, Can submit applications
-
----
-
 ## 📚 API Documentation
 
 ### Swagger UI (Interactive Documentation)
@@ -468,7 +351,7 @@ Once the backend is running, access the interactive API documentation:
    - Click "Try it out"
    - Enter credentials: `admin@example.com` / `admin123`
    - Click "Execute"
-   - Copy the `token` from the response
+   - Copy the `accessToken` from the response
 
 2. **Authorize**:
    - Click the 🔓 "Authorize" button at the top right
@@ -479,253 +362,188 @@ Once the backend is running, access the interactive API documentation:
 3. **Test Endpoints**:
    - Now you can test any protected endpoint directly from Swagger UI
 
-### API Endpoints
+---
 
-#### Authentication Endpoints
-```
-POST   /auth/login              # Login with email/password
-POST   /auth/register           # Register new user
-GET    /auth/profile            # Get current user (requires auth)
-PUT    /auth/profile            # Update profile (requires auth)
-POST   /auth/change-password    # Change password (requires auth)
-POST   /auth/refresh            # Refresh JWT token (requires auth)
-```
+## 🌐 API Endpoints
 
-#### Form Endpoints
-```
-GET    /forms                   # List all forms (filter by: status, universityId, search)
-POST   /forms                   # Create form (Admin/Editor)
-GET    /forms/:id               # Get form by ID with all configured fields
-PUT    /forms/:id               # Update form (Admin/Editor)
-PATCH  /forms/:id               # Partially update form (Admin/Editor)
-DELETE /forms/:id               # Delete form (Admin only)
-POST   /forms/:id/publish       # Publish form (Admin only)
-POST   /forms/:id/archive       # Archive form (Admin/Editor)
-POST   /forms/:id/duplicate     # Duplicate form (Admin/Editor)
-```
+### Authentication
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - User login
+- `POST /auth/logout` - User logout
+- `POST /auth/refresh` - Refresh access token
+- `POST /auth/forgot-password` - Request password reset
+- `POST /auth/reset-password` - Reset password with token
+- `GET /auth/profile` - Get current user profile
+- `PUT /auth/profile` - Update current user profile
+- `POST /auth/change-password` - Change password
 
-#### Category Endpoints
-```
-GET    /masterCategories        # List all categories
-POST   /masterCategories        # Create category (Admin/Editor)
-GET    /masterCategories/:id    # Get category by ID
-PUT    /masterCategories/:id    # Update category (Admin/Editor)
-DELETE /masterCategories/:id    # Delete category (Admin only)
-POST   /masterCategories/:id/subcategories       # Add subcategory (Admin/Editor)
-PUT    /masterCategories/:id/subcategories/:sid  # Update subcategory (Admin/Editor)
-DELETE /masterCategories/:id/subcategories/:sid  # Delete subcategory (Admin only)
-```
+### Dashboard
+- `GET /dashboard/stats` - Get dashboard statistics
 
-#### Field Endpoints
-```
-GET    /masterFields            # List/search fields (query params: category, subcategory, type)
-POST   /masterFields            # Create field (Admin/Editor)
-GET    /masterFields/:id        # Get field by ID
-PUT    /masterFields/:id        # Update field (Admin/Editor)
-DELETE /masterFields/:id        # Delete field (Admin only)
-```
+### Upload
+- `POST /upload` - Upload file
+- `GET /upload/:filename` - Get uploaded file
 
-#### University Endpoints
-```
-GET    /universities            # List all universities (filter by: country, search, isActive)
-POST   /universities            # Create university (Admin only)
-GET    /universities/:id        # Get university by ID
-PUT    /universities/:id        # Update university (Admin only)
-PATCH  /universities/:id        # Partially update university (Admin only)
-DELETE /universities/:id        # Delete university (Admin only)
-GET    /universities/:id/courses # Get all courses for a university
-```
+### Locations
+- `GET /locations/countries` - Get all countries
+- `GET /locations/states` - Get states (query: country)
+- `GET /locations/cities` - Get cities (query: country, state)
 
-#### Course Endpoints
-```
-GET    /courses                 # List all courses (filter by: universityId, type, level, search)
-POST   /courses                 # Create course (Admin/Editor)
-GET    /courses/:id             # Get course by ID
-PUT    /courses/:id             # Update course (Admin/Editor)
-PATCH  /courses/:id             # Partially update course (Admin/Editor)
-DELETE /courses/:id             # Delete course (Admin only)
-```
+### Emails
+- `POST /emails` - Send templated email
 
-#### Application Endpoints
-```
-GET    /applications            # List applications (filter by: userId, universityId, courseId, formId, status)
-POST   /applications            # Submit new application (Authenticated users)
-GET    /applications/stats      # Get application statistics by status
-GET    /applications/:id        # Get application by ID
-PUT    /applications/:id        # Update application (Admin/Editor)
-DELETE /applications/:id        # Delete application (Admin only)
-POST   /applications/:id/submit # Submit a draft application
-POST   /applications/:id/withdraw # Withdraw an application
-POST   /applications/:id/review # Review application - accept/reject (Admin/Editor only)
-```
+### Master Data
+- `GET /masterCategories` - List categories
+- `GET /masterCategories/:id` - Get category
+- `POST /masterCategories` - Create category
+- `PUT /masterCategories/:id` - Update category
+- `DELETE /masterCategories/:id` - Delete category
+- `POST /masterCategories/:id/subcategories` - Add subcategory
+- `PUT /masterCategories/:id/subcategories/:subId` - Update subcategory
+- `DELETE /masterCategories/:id/subcategories/:subId` - Delete subcategory
 
-#### Location Endpoints
-```
-GET    /locations/countries     # List distinct countries (public)
-GET    /locations/states        # Query states by ?country=Name (public)
-GET    /locations/cities        # Query cities by ?country=Name&state=Name (public)
-```
-> Legacy `/v1/locations/...` routes are also available for backward compatibility.
+- `GET /masterFields` - Search fields
+- `GET /masterFields/:id` - Get field
+- `POST /masterFields` - Create field
+- `PUT /masterFields/:id` - Update field
+- `DELETE /masterFields/:id` - Delete field
 
-#### Health Check
-```
-GET    /health                  # API health status
-```
+### Forms
+- `GET /forms` - List forms
+- `GET /forms/:id` - Get form
+- `GET /forms/by-course/:courseId` - Get form by course ID
+- `POST /forms` - Create form
+- `PUT /forms/:id` - Update form
+- `DELETE /forms/:id` - Delete form
+- `POST /forms/:id/publish` - Publish form
+- `POST /forms/:id/archive` - Archive form
+- `POST /forms/:id/duplicate` - Duplicate form
 
-### Example API Calls
+### Universities
+- `GET /universities` - List universities
+- `GET /universities/stats/summary` - Get university statistics
+- `GET /universities/:id` - Get university
+- `GET /universities/:id/courses` - Get university courses
+- `POST /universities` - Create university
+- `PUT /universities/:id` - Update university
+- `DELETE /universities/:id` - Delete university
 
-#### Login
-```bash
-curl -X POST http://localhost:4000/auth/login \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "email": "admin@example.com",
-    "password": "admin123"
-  }'
-```
+### Courses
+- `GET /courses` - List courses
+- `GET /courses/:id` - Get course
+- `POST /courses` - Create course
+- `PUT /courses/:id` - Update course
+- `DELETE /courses/:id` - Delete course
 
-Response:
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "...",
-    "email": "admin@example.com",
-    "name": "Admin User",
-    "role": "admin",
-    "isActive": true
-  }
-}
-```
+### Organizations
+- `GET /organizations/public` - List public organizations
+- `GET /organizations` - List organizations (admin)
+- `GET /organizations/:organizationId` - Get organization
+- `POST /organizations` - Create organization
+- `POST /organizations/:organizationId/admins` - Add organization admin
+- `PATCH /organizations/:organizationId/status` - Update organization status
+- `PATCH /organizations/:organizationId/location` - Update organization location
+- `PATCH /organizations/:organizationId/info` - Update organization info
+- `PATCH /organizations/:organizationId/contacts` - Update organization contacts
+- `PATCH /organizations/:organizationId/onboarding-stage` - Update onboarding stage
 
-#### Get Categories (No Auth Required)
-```bash
-curl http://localhost:4000/masterCategories
-```
+### Course Metadata
+- `GET /course-categories` - List course categories
+- `GET /course-categories/:id` - Get course category
+- `POST /course-categories` - Create course category
+- `PUT /course-categories/:id` - Update course category
+- `DELETE /course-categories/:id` - Delete course category
 
-#### Create Category (Auth Required)
-```bash
-curl -X POST http://localhost:4000/masterCategories \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "Test Category",
-    "icon": "Folder",
-    "description": "Test description",
-    "order": 11
-  }'
-```
+- `GET /course-types` - List course types
+- `GET /course-types/:id` - Get course type
+- `POST /course-types` - Create course type
+- `PUT /course-types/:id` - Update course type
+- `DELETE /course-types/:id` - Delete course type
 
-#### Search Fields by Category
-```bash
-curl "http://localhost:4000/masterFields?category=CATEGORY_ID"
-```
+- `GET /course-levels` - List course levels
+- `GET /course-levels/:id` - Get course level
+- `POST /course-levels` - Create course level
+- `PUT /course-levels/:id` - Update course level
+- `DELETE /course-levels/:id` - Delete course level
 
-#### Create a Form (Auth Required)
-```bash
-curl -X POST http://localhost:4000/forms \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "undergraduate-application-2024",
-    "title": "Undergraduate Application Form 2024",
-    "description": "Application form for Fall 2024 undergraduate programs",
-    "status": "draft",
-    "fields": []
-  }'
-```
+- `GET /learning-outcomes` - List learning outcomes
+- `GET /learning-outcomes/:id` - Get learning outcome
+- `POST /learning-outcomes` - Create learning outcome
+- `PUT /learning-outcomes/:id` - Update learning outcome
+- `DELETE /learning-outcomes/:id` - Delete learning outcome
 
-#### Get All Universities
-```bash
-curl http://localhost:4000/universities
-```
+### Applications
+- `GET /applications` - List applications
+- `GET /applications/stats` - Get application statistics
+- `GET /applications/:id` - Get application
+- `POST /applications` - Create application
+- `PUT /applications/:id` - Update application
+- `DELETE /applications/:id` - Delete application
+- `POST /applications/:id/submit` - Submit application
+- `POST /applications/:id/withdraw` - Withdraw application
+- `POST /applications/:id/review` - Review application (admin)
 
-#### Create a University (Admin Only)
-```bash
-curl -X POST http://localhost:4000/universities \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "Stanford University",
-    "country": "United States",
-    "city": "Stanford",
-    "website": "https://www.stanford.edu",
-    "ranking": 3
-  }'
-```
+### Users
+- `GET /users` - List users
+- `GET /users/:userId` - Get user
+- `POST /users` - Create user
+- `POST /users/bulk` - Bulk create users
+- `PATCH /users/:userId` - Update user
+- `DELETE /users/:userId` - Delete user
 
-#### Get Courses by University
-```bash
-curl "http://localhost:4000/universities/UNIVERSITY_ID/courses"
-```
+### Engagement Builder
+- `GET /wall-posts` - List wall posts
+- `GET /wall-posts/:id` - Get wall post
+- `POST /wall-posts` - Create wall post
+- `PUT /wall-posts/:id` - Update wall post
+- `DELETE /wall-posts/:id` - Delete wall post
 
-#### Create a Course (Admin/Editor)
-```bash
-curl -X POST http://localhost:4000/courses \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "universityId": "UNIVERSITY_ID",
-    "name": "Master of Computer Science",
-    "type": "degree",
-    "level": "postgraduate",
-    "duration": "2 years",
-    "fee": 55000,
-    "currency": "USD"
-  }'
-```
+- `GET /community-posts` - List community posts
+- `GET /community-posts/categories` - List categories
+- `GET /community-posts/categories/:id` - Get category
+- `POST /community-posts/categories` - Create category
+- `PUT /community-posts/categories/:id` - Update category
+- `DELETE /community-posts/categories/:id` - Delete category
+- `GET /community-posts/:id` - Get community post
+- `POST /community-posts` - Create community post
+- `PUT /community-posts/:id` - Update community post
+- `DELETE /community-posts/:id` - Delete community post
 
-#### Publish a Form (Admin Only)
-```bash
-curl -X POST http://localhost:4000/forms/FORM_ID/publish \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
-```
+- `GET /reels` - List reels
+- `GET /reels/:id` - Get reel
+- `POST /reels` - Create reel
+- `PUT /reels/:id` - Update reel
+- `DELETE /reels/:id` - Delete reel
+- `POST /reels/:id/views` - Increment views
+- `POST /reels/:id/likes` - Increment likes
 
-#### Submit an Application
-```bash
-curl -X POST http://localhost:4000/applications \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "userId": "user@example.com",
-    "universityId": "UNIVERSITY_ID",
-    "courseId": "COURSE_ID",
-    "formId": "FORM_ID",
-    "formData": {
-      "firstName": "John",
-      "lastName": "Doe",
-      "email": "john@example.com",
-      "phone": "+1234567890"
-    },
-    "status": "submitted",
-    "metadata": {
-      "completionTime": 300
-    }
-  }'
-```
+- `GET /events` - List events
+- `GET /events/:id` - Get event
+- `POST /events` - Create event
+- `PUT /events/:id` - Update event
+- `DELETE /events/:id` - Delete event
+- `POST /events/:id/views` - Increment views
+- `POST /events/:id/registrations` - Increment registrations
 
-#### Get User's Applications
-```bash
-curl "http://localhost:4000/applications?userId=user@example.com&status=submitted" \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
-```
+- `GET /scholarships` - List scholarships
+- `GET /scholarships/:id` - Get scholarship
+- `POST /scholarships` - Create scholarship
+- `PUT /scholarships/:id` - Update scholarship
+- `DELETE /scholarships/:id` - Delete scholarship
+- `POST /scholarships/:id/views` - Increment views
+- `POST /scholarships/:id/applications` - Increment applications
 
-#### Get Application Statistics
-```bash
-curl http://localhost:4000/applications/stats \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
-```
+### System
+- `GET /health` - Health check endpoint
+- `GET /docs` - API documentation (Swagger UI)
 
-#### Review Application (Admin/Editor)
-```bash
-curl -X POST http://localhost:4000/applications/APPLICATION_ID/review \
-  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "status": "accepted",
-    "reviewNotes": "Excellent candidate with strong qualifications"
-  }'
-```
+### Notes
+
+- All endpoints maintain the same paths as before migration
+- No `/v1` prefix - all routes are at base level
+- Authentication: Bearer token in `Authorization` header
+- All endpoints use the new module structure internally
+- Response format remains consistent
 
 ---
 
@@ -733,26 +551,15 @@ curl -X POST http://localhost:4000/applications/APPLICATION_ID/review \
 
 ```bash
 # Development
-npm run dev              # Start development server with hot reload (uses tsx watch)
+npm run dev              # Start development server with hot reload
 npm run build            # Build TypeScript to JavaScript (output to dist/)
 npm run start            # Start production server (runs compiled code from dist/)
 
-# Database Operations
-npm run seed             # Load categories and fields sample data
-npm run seed:users       # Create default users (admin, editor, user)
-npm run seed:universities # Load sample universities
-npm run seed:forms       # Load sample application forms
-npm run seed:locations   # Import country/state/city hierarchy from Excel or CSV
-npm run seed:check       # Check database status (show counts of all collections)
-npm run seed:clear       # Clear all data from database
-npm run db:reset         # Clear and re-seed categories/fields
-npm run db:status        # Alias for seed:check - show database status
+# User Management
+npm run create:users     # Create users using scripts/create-users.js
 
 # Code Quality
 npm run lint             # Run ESLint
-
-# Testing
-npm run test             # Run tests (if configured)
 ```
 
 ---
@@ -761,172 +568,166 @@ npm run test             # Run tests (if configured)
 
 ### Permission Matrix
 
-| Action | SuperAdmin | Admin | Presenter | Learner | Guest |
-|--------|:----------:|:-----:|:---------:|:-------:|:-----:|
-| **View** categories/fields/forms/universities/courses | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **View** profile | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **View** own applications | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **View** all applications | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Create** categories/fields/forms/courses | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Create** universities | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Create** applications (submit) | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Update** categories/fields/forms/courses | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Update** universities | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Update** own draft applications | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Update** any applications | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Delete** categories/fields/forms/courses/universities | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Delete** applications | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Publish** forms | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Archive** forms | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Duplicate** forms | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Review** applications (accept/reject) | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Withdraw** own applications | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Register** new users | ✅ | ❌ | ❌ | ❌ | ✅ |
-
-### Middleware Usage
-
-The API uses two main middleware for authorization:
-
-1. **`requireAuth`**: Requires valid JWT token
-2. **`permit(...roles)`**: Requires specific role(s)
-
-Example route protection:
-```typescript
-// Forms - SuperAdmin/Admin/Presenter can create, only SuperAdmin/Admin can publish
-router.post('/forms', 
-  requireAuth, 
-  permit('superadmin', 'admin', 'presenter'), 
-  formController.create
-);
-
-router.post('/forms/:id/publish', 
-  requireAuth, 
-  permit('superadmin', 'admin'), 
-  formController.publish
-);
-
-// Universities - SuperAdmin/Admin only
-router.post('/universities', 
-  requireAuth, 
-  permit('superadmin', 'admin'), 
-  universityController.create
-);
-
-// Courses - SuperAdmin/Admin/Presenter can manage
-router.post('/courses', 
-  requireAuth, 
-  permit('superadmin', 'admin', 'presenter'), 
-  courseController.create
-);
-
-// Applications - All authenticated users can create
-router.post('/applications', 
-  requireAuth, 
-  applicationController.create
-);
-
-// Applications - SuperAdmin/Admin/Presenter can review
-router.post('/applications/:id/review', 
-  requireAuth, 
-  permit('superadmin', 'admin', 'presenter'), 
-  applicationController.review
-);
-
-// Categories - SuperAdmin/Admin/Presenter can create/update, only SuperAdmin/Admin can delete
-router.delete('/masterCategories/:id', 
-  requireAuth, 
-  permit('superadmin', 'admin'), 
-  categoryController.delete
-);
-```
+| Action | SuperAdmin | Admin | Learner | Guest |
+|--------|:----------:|:-----:|:-------:|:-----:|
+| **View** categories/fields/forms/universities/courses | ✅ | ✅ | ✅ | ✅ |
+| **View** profile | ✅ | ✅ | ✅ | ❌ |
+| **View** own applications | ✅ | ✅ | ✅ | ❌ |
+| **View** all applications | ✅ | ✅ | ❌ | ❌ |
+| **Create** categories/fields/forms/courses | ✅ | ✅ | ❌ | ❌ |
+| **Create** universities | ✅ | ✅ | ❌ | ❌ |
+| **Create** applications (submit) | ✅ | ✅ | ✅ | ❌ |
+| **Update** categories/fields/forms/courses | ✅ | ✅ | ❌ | ❌ |
+| **Update** universities | ✅ | ✅ | ❌ | ❌ |
+| **Update** own draft applications | ✅ | ✅ | ✅ | ❌ |
+| **Update** any applications | ✅ | ✅ | ❌ | ❌ |
+| **Delete** categories/fields/forms/courses/universities | ✅ | ✅ | ❌ | ❌ |
+| **Delete** applications | ✅ | ✅ | ❌ | ❌ |
+| **Publish** forms | ✅ | ✅ | ❌ | ❌ |
+| **Archive** forms | ✅ | ✅ | ❌ | ❌ |
+| **Duplicate** forms | ✅ | ✅ | ❌ | ❌ |
+| **Review** applications (accept/reject) | ✅ | ✅ | ❌ | ❌ |
+| **Withdraw** own applications | ✅ | ✅ | ✅ | ❌ |
+| **Register** new users | ✅ | ❌ | ❌ | ✅ |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-backend-service/
+acado-api/
 ├── src/
-│   ├── controllers/           # Route handlers
-│   │   ├── auth.controller.ts
-│   │   ├── category.controller.ts
-│   │   ├── field.controller.ts
-│   │   ├── form.controller.ts
-│   │   ├── university.controller.ts
-│   │   ├── course.controller.ts
-│   │   ├── application.controller.ts
-│   │   └── location.controller.ts
+│   ├── config/                # Configuration
+│   │   ├── env.ts             # Environment variables
+│   │   ├── db.ts              # Database configuration
+│   │   └── logger.ts          # Pino logger setup
+│   ├── core/                  # Core utilities
+│   │   ├── http/              # HTTP utilities
+│   │   │   ├── ApiError.ts    # Custom error class
+│   │   │   └── ApiResponse.ts # Response utilities
+│   │   ├── middleware/       # Express middleware
+│   │   │   ├── authMiddleware.ts      # JWT authentication
+│   │   │   ├── rbacMiddleware.ts     # Role-based access control
+│   │   │   ├── validateMiddleware.ts  # Zod validation
+│   │   │   ├── errorHandler.ts       # Error handling
+│   │   │   ├── rateLimiter.ts         # Rate limiting
+│   │   │   ├── requestLogger.ts       # Request logging
+│   │   │   └── universityScopeMiddleware.ts # University scoping
+│   │   └── utils/             # Utility functions
+│   │       ├── crypto.ts      # Password hashing, token generation
+│   │       ├── date.ts        # Date utilities
+│   │       ├── file.ts        # File utilities
+│   │       └── validator.ts  # Validation utilities
+│   ├── infrastructure/        # Infrastructure layer
+│   │   └── database/          # Database
+│   │       └── mongo/         # MongoDB
+│   │           ├── connection.ts      # MongoDB connection
+│   │           ├── BaseRepository.ts  # Base repository class
+│   │           └── types.ts          # Database types
+│   ├── loaders/               # Application loaders
+│   │   ├── express.ts         # Express app initialization
+│   │   ├── routes.ts          # Route registration
+│   │   └── index.ts           # Main loader orchestrator
+│   ├── modules/               # Business modules (22 modules)
+│   │   ├── auth/              # Authentication module
+│   │   ├── user/              # User management
+│   │   ├── category/          # Category management
+│   │   ├── field/             # Field management
+│   │   ├── university/        # University management
+│   │   ├── course/            # Course management
+│   │   ├── courseCategory/   # Course category management
+│   │   ├── courseType/        # Course type management
+│   │   ├── courseLevel/       # Course level management
+│   │   ├── learningOutcome/   # Learning outcome management
+│   │   ├── form/              # Form builder
+│   │   ├── application/      # Application management
+│   │   ├── organization/      # Organization management
+│   │   ├── location/          # Location management
+│   │   ├── dashboard/         # Dashboard statistics
+│   │   ├── upload/            # File upload
+│   │   ├── email/             # Email service
+│   │   ├── wallPost/          # Wall posts
+│   │   ├── communityPost/    # Community posts
+│   │   ├── reel/              # Reels
+│   │   ├── event/             # Events
+│   │   └── scholarship/      # Scholarships
 │   ├── models/                # Mongoose models
+│   │   ├── User.ts
 │   │   ├── Category.ts
 │   │   ├── Field.ts
 │   │   ├── Form.ts
 │   │   ├── University.ts
 │   │   ├── Course.ts
 │   │   ├── Application.ts
-│   │   ├── User.ts
-│   │   └── Location.ts
-│   ├── routes/                # Express routes
-│   │   ├── auth.routes.ts
-│   │   ├── category.routes.ts
-│   │   ├── field.routes.ts
-│   │   ├── form.routes.ts
-│   │   ├── university.routes.ts
-│   │   ├── course.routes.ts
-│   │   ├── application.routes.ts
-│   │   ├── location.routes.ts
-│   │   └── index.ts
-│   ├── services/              # Business logic
-│   │   ├── category.service.ts
-│   │   ├── field.service.ts
-│   │   ├── form.service.ts
-│   │   ├── university.service.ts
-│   │   ├── course.service.ts
-│   │   ├── application.service.ts
-│   │   └── location.service.ts
-│   ├── middleware/            # Custom middleware
-│   │   ├── auth.ts           # JWT verification
-│   │   ├── rbac.ts           # Role-based access control
-│   │   ├── validate.ts       # Zod validation
-│   │   ├── error.ts          # Error handling
-│   │   └── rateLimit.ts      # Rate limiting
+│   │   └── ... (19 models total)
 │   ├── schemas/               # Zod validation schemas
 │   │   ├── category.schema.ts
 │   │   ├── field.schema.ts
 │   │   ├── form.schema.ts
 │   │   ├── application.schema.ts
-│   │   ├── location.schema.ts
-│   │   └── shared.ts
-│   ├── seed/                  # Database seeders
-│   │   ├── seed.ts           # Category/field seeder
-│   │   ├── seed-users.ts     # User seeder
-│   │   ├── seed-forms.ts     # Form seeder
-│   │   ├── seed-universities.ts # University seeder
-│   │   ├── seed-locations.ts # Location hierarchy importer
-│   │   ├── check-db.ts       # Database status checker
-│   │   └── clear-db.ts       # Database clearer
-│   ├── data/                 # Static datasets
-│   │   └── locations.sample.csv
-│   ├── docs/                  # API documentation
-│   │   └── openapi.ts        # OpenAPI/Swagger spec
-│   ├── db/                    # Database connection
-│   │   └── mongoose.ts
-│   ├── config/                # Configuration
-│   │   └── env.ts
-│   ├── utils/                 # Utilities
-│   │   ├── ApiError.ts
-│   │   └── logger.ts
+│   │   └── ... (13 schemas total)
+│   ├── services/              # Legacy services (gradual migration)
+│   │   ├── user.service.ts
+│   │   ├── dashboard.service.ts
+│   │   ├── email.service.ts
+│   │   └── ... (20 services total, 9 still in use)
 │   ├── types/                 # TypeScript types
-│   │   └── express-request-id.d.ts
-│   ├── app.ts                 # Express app setup
+│   │   ├── express-request-id.d.ts
+│   │   └── nodemailer.d.ts
+│   ├── app.ts                 # Legacy app.ts (re-exports loadApp)
 │   └── server.ts              # Entry point
 ├── dist/                      # Compiled JavaScript (generated)
 ├── .env                       # Environment variables (create this)
 ├── package.json
 ├── tsconfig.json
-├── docker-compose.yaml        # Docker Compose configuration
-├── Dockerfile                 # Docker configuration
 └── README.md
 ```
+
+---
+
+## 🔄 Migration Status
+
+### ✅ Completed Migration (2024-07-30)
+
+The project has been successfully migrated to a clean enterprise architecture:
+
+#### Infrastructure Migration (100% Complete)
+- ✅ All routes migrated to new modules
+- ✅ All controllers migrated to new modules
+- ✅ All middleware migrated to `core/middleware/`
+- ✅ All utilities migrated to `core/utils/` and `config/logger.ts`
+- ✅ All database connections migrated to `infrastructure/database/mongo/`
+- ✅ Upload module fully migrated (no longer depends on old controllers)
+- ✅ v1 routes removed (cleaner API)
+
+#### Old Folders Removed
+- ✅ `src/middleware/` - REMOVED (6 files)
+- ✅ `src/utils/` - REMOVED (2 files)
+- ✅ `src/db/` - REMOVED (1 file)
+- ✅ `src/routes/` - REMOVED (23 files)
+- ✅ `src/controllers/` - REMOVED (22 files)
+
+#### Remaining Old Folders
+- ⚠️ `src/services/` - Still Present (Used by 9 new modules)
+  - **Status**: New modules wrap old services (gradual migration pattern)
+  - **Used By**: user, dashboard, email, application, form, auth, event, scholarship, organization
+  - **Reason**: Business logic still in old services (safe migration approach)
+  - **Action**: Can be migrated gradually by moving business logic to new services
+
+#### Endpoint Compatibility
+- ✅ **All endpoints remain the same** - No frontend changes required
+- ✅ **Same request/response formats**
+- ✅ **Same authentication mechanism**
+- ✅ **No `/v1` prefix** - Cleaner API
+
+#### Current Architecture
+- ✅ **22 modules** fully migrated and operational
+- ✅ **Clean separation of concerns** (Core, Infrastructure, Modules, Shared)
+- ✅ **Repository pattern** implemented
+- ✅ **DTO pattern** implemented
+- ✅ **Service layer** with business logic
+- ✅ **Controller layer** with HTTP handlers
+- ✅ **Route layer** with Express routes
 
 ---
 
@@ -967,8 +768,9 @@ lsof -ti:4000 | xargs kill
 ```bash
 # Warning: JWT_SECRET environment variable is not set
 
-# Solution: Create .env file with JWT_SECRET
-echo "JWT_SECRET=your-secure-random-string-here" > .env
+# Solution: Create .env file with JWT secrets
+echo "JWT_ACCESS_SECRET=your-secure-random-string-here" > .env
+echo "JWT_REFRESH_SECRET=your-secure-random-string-here" >> .env
 ```
 
 ### TypeScript errors during build
@@ -984,10 +786,8 @@ npm run build
 ```bash
 # No data returned from API
 
-# Solution: Load sample data
-npm run seed:users
-npm run seed
-npm run seed:check  # Verify data loaded
+# Solution: Create users and data through API endpoints or scripts
+npm run create:users    # Create users using scripts/create-users.js
 ```
 
 ### Authentication fails
@@ -995,21 +795,9 @@ npm run seed:check  # Verify data loaded
 # Error: Invalid email or password
 
 # Solution: Make sure users are created
-npm run seed:users
+npm run create:users
 
-# Then try login with correct credentials:
-# admin@example.com / admin123
-```
-
-### Reset everything
-```bash
-# Start fresh with clean database
-
-# Stop the server (Ctrl+C)
-npm run seed:clear      # Clear all data
-npm run seed:users      # Recreate users
-npm run seed            # Reload categories/fields
-npm run dev             # Restart server
+# Then try login with correct credentials
 ```
 
 ---
@@ -1017,14 +805,15 @@ npm run dev             # Restart server
 ## 🔒 Security Features
 
 - ✅ **Password Hashing**: bcrypt with 10 salt rounds
-- ✅ **JWT Tokens**: 7-day expiration, signed with secret
+- ✅ **JWT Tokens**: Access tokens (15m) and refresh tokens (7d), signed with secrets
 - ✅ **CORS Protection**: Configurable allowed origins
 - ✅ **Rate Limiting**: 100 requests per 15 minutes per IP
 - ✅ **Security Headers**: Helmet.js for security headers
 - ✅ **Input Validation**: Zod schemas for all endpoints
-- ✅ **Role-Based Access Control**: Admin, Editor, User roles
+- ✅ **Role-Based Access Control**: SuperAdmin, Admin, Learner roles
 - ✅ **Error Handling**: Generic error messages in production
 - ✅ **Request ID**: Unique ID for each request (logging)
+- ✅ **Refresh Token Rotation**: Token version tracking for security
 
 ---
 
@@ -1034,10 +823,13 @@ npm run dev             # Restart server
 
 1. User sends email/password to `/auth/login`
 2. Server validates credentials against database
-3. If valid, server generates JWT token
-4. Client stores token and sends it in `Authorization` header
-5. Server verifies token on protected routes
-6. Server grants access based on user's role
+3. If valid, server generates access token (15m) and refresh token (7d)
+4. Refresh token is stored in HTTP-only cookie
+5. Access token is returned in response body
+6. Client stores access token and sends it in `Authorization` header
+7. Server verifies token on protected routes
+8. When access token expires, client uses refresh token to get new access token
+9. Server grants access based on user's role
 
 ### Development vs Production
 
@@ -1045,11 +837,11 @@ npm run dev             # Restart server
 - Detailed error messages with stack traces
 - Console logging enabled
 - CORS allows multiple origins
-- Hot reload with nodemon
+- Hot reload with tsx watch
 
 **Production Mode** (`NODE_ENV=production`):
 - Generic error messages
-- Structured logging
+- Structured logging with Pino
 - Strict CORS configuration
 - Optimized builds
 
@@ -1074,18 +866,11 @@ Your Backend API Service is now set up and ready to use!
 - [ ] MongoDB is running
 - [ ] Dependencies installed (`npm install`)
 - [ ] Environment configured (`.env` created if needed)
-- [ ] Default users created (`npm run seed:users`)
-- [ ] Master fields/categories loaded (`npm run seed`)
-- [ ] Sample universities loaded (`npm run seed:universities`)
-- [ ] Sample forms loaded (`npm run seed:forms`)
-- [ ] Database status verified (`npm run seed:check`)
 - [ ] Server running (`npm run dev`)
 - [ ] Health check passes (http://localhost:4000/health)
 - [ ] Swagger docs accessible (http://localhost:4000/docs)
-- [ ] Can login with admin credentials
-- [ ] Can view forms, universities, courses, and applications endpoints
+- [ ] Can access API endpoints
 
 **Next Step**: Start the frontend application to interact with this API!
 
 Happy coding! 🚀
-

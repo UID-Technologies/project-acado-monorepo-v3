@@ -1,7 +1,7 @@
 // src/services/courseCategory.service.ts
 import CourseCategory from '../models/CourseCategory.js';
 import { Types } from 'mongoose';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 export interface ListCourseCategoryParams {
   parentId?: string | null;

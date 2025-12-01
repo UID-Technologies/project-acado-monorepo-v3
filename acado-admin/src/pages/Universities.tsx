@@ -24,14 +24,11 @@ import {
 } from "@/api/universities.api";
 import { InstitutionType } from "@/types/university";
 
-const DEFAULT_PAGE_SIZE = 20;
-
 const Universities = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [universities, setUniversities] = useState<UniversitySummary[]>([]);
-  const [pagination, setPagination] = useState({ page: 1, pageSize: DEFAULT_PAGE_SIZE, totalItems: 0, totalPages: 1 });
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<InstitutionType | "all">("all");
   const [deleteUniversityId, setDeleteUniversityId] = useState<string | null>(null);
@@ -48,32 +45,36 @@ const Universities = () => {
         const params: UniversityListParams = {
           search: overrides?.search ?? (searchQuery || undefined),
           institutionType: overrides?.institutionType ?? (filterType !== "all" ? filterType : undefined),
-          page: overrides?.page ?? pagination.page,
-          pageSize: overrides?.pageSize ?? pagination.pageSize,
           status: overrides?.status ?? (filterStatus !== 'all' ? filterStatus : undefined),
         };
 
-        const response = await universitiesApi.getUniversities(params);
-        setUniversities(response.data);
-        setPagination(response.pagination);
+        const universitiesList = await universitiesApi.getUniversities(params);
+        setUniversities(universitiesList);
       } catch (err: any) {
         console.error("Failed to load universities", err);
-        const message = err?.response?.data?.error || err?.message || "Failed to load universities";
-        setError(message);
+        // Extract error message safely - handle both string and object errors
+        let errorMessage = "Failed to load universities";
+        if (err?.response?.data?.error) {
+          const errorObj = err.response.data.error;
+          errorMessage = typeof errorObj === 'string' ? errorObj : (errorObj?.message || errorMessage);
+        } else if (err?.message) {
+          errorMessage = typeof err.message === 'string' ? err.message : errorMessage;
+        }
+        setError(errorMessage);
         toast({
           title: "Failed to load universities",
-          description: message,
+          description: errorMessage,
           variant: "destructive",
         });
       } finally {
         setLoading(false);
       }
     },
-    [filterType, filterStatus, pagination.page, pagination.pageSize, searchQuery, toast]
+    [filterType, filterStatus, searchQuery, toast]
   );
 
   useEffect(() => {
-    fetchUniversities({ page: 1 });
+    fetchUniversities();
   }, [fetchUniversities]);
 
   const handleDelete = async () => {
@@ -85,7 +86,7 @@ const Universities = () => {
         description: "The university has been archived successfully.",
       });
       setDeleteUniversityId(null);
-      fetchUniversities({ page: 1 });
+      fetchUniversities();
     } catch (err: any) {
       toast({
         title: "Failed to remove organization",
@@ -195,7 +196,7 @@ const Universities = () => {
           <Card className="p-12 text-center border-none">
             <Building2 className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Failed to load universities</h3>
-            <p className="text-muted-foreground mb-4">{error}</p>
+            <p className="text-muted-foreground mb-4">{typeof error === 'string' ? error : (error?.message || 'An error occurred')}</p>
             <Button variant="outline" onClick={() => fetchUniversities()} disabled={loading}>
               Retry
             </Button>

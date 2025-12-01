@@ -366,4 +366,13 @@ mongoimport \
   --file employees.json
 
 
+
+mongoimport --uri="mongodb://localhost:27017" --db acadodb --collection locations --drop --file locations.json
+
+mongoimport --uri="mongodb://localhost:27017" --db acadodb --collection categories --drop --file categories.json
+
+mongoimport --uri="mongodb://localhost:27017" --db acadodb --collection fields --drop --file fields.json
+
+mongoimport --uri="mongodb://localhost:27017" --db acadodb --collection universities --drop --file universities.json
+
 ```

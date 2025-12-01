@@ -79,8 +79,8 @@ export interface QueryApplicationsParams {
 }
 
 export interface ApplicationsListResponse {
-  applications: Application[];
-  pagination: {
+  applications?: Application[];
+  pagination?: {
     page: number;
     limit: number;
     total: number;
@@ -88,10 +88,14 @@ export interface ApplicationsListResponse {
   };
 }
 
+// Backend returns array directly after pagination removal
+export type ApplicationsListResponseArray = Application[];
+
 export const applicationsApi = {
   // Get all applications with optional filters
-  getApplications: async (params?: QueryApplicationsParams): Promise<ApplicationsListResponse> => {
+  getApplications: async (params?: QueryApplicationsParams): Promise<ApplicationsListResponse | ApplicationsListResponseArray> => {
     const response = await axiosInstance.get('/applications', { params });
+    // Backend returns array directly (after axios interceptor unwraps it)
     return response.data;
   },
 

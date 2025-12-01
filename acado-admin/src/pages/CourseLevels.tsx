@@ -25,6 +25,7 @@ import { CourseLevel } from '@/types/courseLevel';
 import { AddEditCourseLevelDialog } from '@/components/courseLevels/AddEditCourseLevelDialog';
 import { toast } from '@/hooks/use-toast';
 import { courseLevelsApi, UpsertCourseLevelPayload } from '@/api/courseLevels.api';
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 export default function CourseLevels() {
   const [levels, setLevels] = useState<CourseLevel[]>([]);
@@ -43,7 +44,7 @@ export default function CourseLevels() {
       console.error('Failed to load course levels', error);
       toast({
         title: 'Failed to load course levels',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -66,7 +67,7 @@ export default function CourseLevels() {
     } catch (error: any) {
       toast({
         title: 'Failed to add level',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;
@@ -86,7 +87,7 @@ export default function CourseLevels() {
     } catch (error: any) {
       toast({
         title: 'Failed to update level',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;
@@ -105,7 +106,7 @@ export default function CourseLevels() {
     } catch (error: any) {
       toast({
         title: 'Failed to delete level',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -122,7 +123,7 @@ export default function CourseLevels() {
     } catch (error: any) {
       toast({
         title: 'Failed to update status',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     }

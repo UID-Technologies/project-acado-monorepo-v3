@@ -2,7 +2,7 @@ import { FilterQuery, Types } from 'mongoose';
 import User, { IUser, UserDocument, UserRole } from '../models/User.js';
 import University from '../models/University.js';
 import Organization from '../models/Organization.js';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 export interface ListUsersParams {
   search?: string;

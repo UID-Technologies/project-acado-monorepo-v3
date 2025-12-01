@@ -1,7 +1,7 @@
 // src/services/courseLevel.service.ts
 import CourseLevel from '../models/CourseLevel.js';
 import { Types } from 'mongoose';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 export const listLevels = async (includeInactive = false) => {
   const query: Record<string, any> = {};

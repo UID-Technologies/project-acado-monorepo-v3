@@ -1,7 +1,7 @@
 // src/services/learningOutcome.service.ts
 import LearningOutcome from '../models/LearningOutcome.js';
 import { Types } from 'mongoose';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 export interface ListLearningOutcomeParams {
   parentId?: string | null;

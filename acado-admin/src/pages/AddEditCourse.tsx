@@ -82,12 +82,13 @@ const AddEditCourse = () => {
         courseCategoriesApi.list({ includeInactive: true }),
         courseLevelsApi.list({ includeInactive: true }),
         courseTypesApi.list({ includeInactive: true }),
-        universitiesApi.getUniversities({ page: 1, pageSize: 200 }),
+        universitiesApi.getUniversities(),
       ]);
       setCategories(categoriesRes);
       setLevels(levelsRes);
       setTypes(typesRes);
-      setOrganizations(universitiesRes.data ?? []);
+      // Backend returns array directly
+      setOrganizations(universitiesRes ?? []);
     } catch (error: any) {
       toast({
         title: 'Failed to load reference data',

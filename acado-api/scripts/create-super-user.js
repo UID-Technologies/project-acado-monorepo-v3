@@ -2,7 +2,7 @@
  * Create or update a super admin user directly from the Mongo shell.
  *
  * Usage example:
- *   mongo acedodb scripts/create-super-user.js --eval 'email="admin@example.com"; password="ChangeMe123"; name="Super Admin";'
+ *   mongo acadodb scripts/create-super-user.js --eval 'email="admin@example.com"; password="ChangeMe123"; name="Super Admin";'
  *
  * Provide either:
  *   - password (plaintext; hashed in script with SHA-256 fallback) OR

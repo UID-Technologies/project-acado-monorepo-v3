@@ -33,6 +33,7 @@ import { universitiesApi } from '@/api/universities.api';
 import { usersApi } from '@/api/users.api';
 import { emailApi } from '@/api/email.api';
 import axiosInstance from '@/lib/axios';
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 interface UniversityOption {
   id: string;
@@ -55,8 +56,9 @@ const Users = () => {
 
   const fetchUniversities = useCallback(async () => {
     try {
-      const response = await universitiesApi.getUniversities({ page: 1, pageSize: 500 });
-      const options = response.data.map((uni) => ({ id: uni.id, name: uni.name }));
+      const response = await universitiesApi.getUniversities();
+      // Backend returns array directly
+      const options = (response || []).map((uni) => ({ id: uni.id, name: uni.name }));
       setUniversities(options);
     } catch (error) {
       console.warn('Failed to load universities list for users page', error);
@@ -72,9 +74,10 @@ const Users = () => {
         userType: typeFilter !== 'all' ? typeFilter : undefined,
         status: statusFilter !== 'all' ? statusFilter : undefined,
         universityId: universityFilter !== 'all' ? universityFilter : undefined,
-        pageSize: 200,
+        // Removed: pageSize (pagination removed)
       });
-      setUsers(response.data);
+      // Backend returns array directly
+      setUsers(response || []);
     } catch (error: any) {
       console.error('Failed to load users:', error);
       toast({
@@ -147,7 +150,7 @@ const Users = () => {
       console.error('❌ Failed to send reset password email:', error);
       toast({
         title: 'Failed to send email',
-        description: error?.response?.data?.error || error?.message || 'Please try again later',
+        description: extractErrorMessage(error, 'Please try again later'),
         variant: 'destructive',
       });
     }
@@ -183,7 +186,7 @@ const Users = () => {
       console.error('❌ Failed to send credentials email:', error);
       toast({
         title: 'Failed to send email',
-        description: error?.response?.data?.error || error?.message || 'Please try again later',
+        description: extractErrorMessage(error, 'Please try again later'),
         variant: 'destructive',
       });
     }

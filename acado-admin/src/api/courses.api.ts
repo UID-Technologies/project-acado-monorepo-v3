@@ -42,6 +42,19 @@ export const coursesApi = {
     return response.data;
   },
 
+  // Alias for list method
+  async getCourses(params?: {
+    universityId?: string;
+    type?: string;
+    level?: string;
+    courseCategoryId?: string;
+    courseTypeId?: string;
+    courseLevelId?: string;
+    isActive?: boolean;
+  }) {
+    return this.list(params);
+  },
+
   async get(id: string) {
     const response = await axiosInstance.get<Course>(`/courses/${id}`);
     return response.data;

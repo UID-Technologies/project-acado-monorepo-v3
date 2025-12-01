@@ -55,16 +55,17 @@ const AddEditUser = () => {
       setLoading(true);
 
       try {
-        const uniResponse = await universitiesApi.getUniversities({ page: 1, pageSize: 500 });
+        const uniResponse = await universitiesApi.getUniversities();
         if (!isMounted) return;
-        setUniversities(uniResponse.data.map((uni) => ({ id: uni.id, name: uni.name })));
+        // Backend returns array directly
+        setUniversities((uniResponse || []).map((uni) => ({ id: uni.id, name: uni.name })));
       } catch (error: any) {
         console.error('Failed to load universities for user form:', error);
         if (isMounted) {
           setUniversities([]);
           toast({
             title: 'Unable to load universities',
-            description: error?.message || 'Please try again later.',
+            description: extractErrorMessage(error, 'Please try again later.'),
           });
         }
       }

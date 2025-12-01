@@ -110,7 +110,7 @@ export function loadEnv() {
 //   return {
 //     NODE_ENV,
 //     PORT: Number(process.env.PORT || 5000),
-//     MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/acedodb',
+//     MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/acadodb',
 //     JWT_ACCESS_SECRET,
 //     JWT_REFRESH_SECRET,
 //     ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',

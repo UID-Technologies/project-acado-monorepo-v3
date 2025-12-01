@@ -60,8 +60,9 @@ const UniversityUserManagement = () => {
 
   const fetchUniversities = useCallback(async () => {
     try {
-      const response = await universitiesApi.getUniversities({ page: 1, pageSize: 500 });
-      const options = response.data.map((uni) => ({ id: uni.id, name: uni.name }));
+      const response = await universitiesApi.getUniversities();
+      // Backend returns array directly
+      const options = (response || []).map((uni) => ({ id: uni.id, name: uni.name }));
       setUniversities(options);
     } catch (error) {
       console.warn('Failed to load universities list for users page', error);
@@ -88,9 +89,10 @@ const UniversityUserManagement = () => {
         userType: typeFilter !== 'all' ? typeFilter : undefined,
         status: statusFilter !== 'all' ? statusFilter : undefined,
         universityId: adminUniversityId, // Always filter by admin's university
-        pageSize: 200,
+        // Removed: pageSize (pagination removed)
       });
-      setUsers(response.data);
+      // Backend returns array directly
+      setUsers(response || []);
     } catch (error: any) {
       console.error('Failed to load users:', error);
       toast({

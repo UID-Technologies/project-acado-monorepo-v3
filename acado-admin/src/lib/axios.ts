@@ -24,9 +24,16 @@ axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-// Handle 401 errors by clearing token and redirecting to login
+// Unwrap backend response structure { success: true, data: {...} }
+// This allows all API files to access response.data directly
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If response has the wrapped structure, unwrap it
+    if (response.data && typeof response.data === 'object' && 'success' in response.data && 'data' in response.data) {
+      response.data = response.data.data;
+    }
+    return response;
+  },
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
       console.log('❌ 401 Unauthorized - clearing session');

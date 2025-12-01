@@ -1,6 +1,6 @@
 // src/services/location.service.ts
 import Location from '../models/Location.js';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

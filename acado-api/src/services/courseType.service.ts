@@ -1,7 +1,7 @@
 // src/services/courseType.service.ts
 import CourseType from '../models/CourseType.js';
 import { Types } from 'mongoose';
-import ApiError from '../utils/ApiError.js';
+import { ApiError } from '../core/http/ApiError.js';
 
 export const listTypes = async (includeInactive = false) => {
   const query: Record<string, any> = {};

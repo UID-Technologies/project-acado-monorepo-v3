@@ -25,6 +25,7 @@ import { LearningOutcome } from '@/types/learningOutcome';
 import { AddEditLearningOutcomeDialog } from '@/components/learningOutcomes/AddEditLearningOutcomeDialog';
 import { toast } from '@/hooks/use-toast';
 import { learningOutcomesApi, UpsertLearningOutcomePayload } from '@/api/learningOutcomes.api';
+import { extractErrorMessage } from '@/utils/errorUtils';
 
 export default function LearningOutcomes() {
   const [outcomes, setOutcomes] = useState<LearningOutcome[]>([]);
@@ -44,7 +45,7 @@ export default function LearningOutcomes() {
       console.error('Failed to load learning outcomes', error);
       toast({
         title: 'Failed to load learning outcomes',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -76,7 +77,7 @@ export default function LearningOutcomes() {
     } catch (error: any) {
       toast({
         title: 'Failed to add learning outcome',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;
@@ -93,7 +94,7 @@ export default function LearningOutcomes() {
     } catch (error: any) {
       toast({
         title: 'Failed to update learning outcome',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
       throw error;
@@ -121,7 +122,7 @@ export default function LearningOutcomes() {
     } catch (error: any) {
       toast({
         title: 'Failed to delete learning outcome',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     } finally {
@@ -138,7 +139,7 @@ export default function LearningOutcomes() {
     } catch (error: any) {
       toast({
         title: 'Failed to update status',
-        description: error?.response?.data?.error || error?.message || 'Please try again later.',
+        description: extractErrorMessage(error, 'Please try again later.'),
         variant: 'destructive',
       });
     }
