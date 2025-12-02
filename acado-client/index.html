@@ -8,6 +8,19 @@
   <meta name="description" content="Acado.ai is a platform for Education" />
   <title>Acado.ai</title>
   
+  <!-- Content Security Policy - Allow connections to API -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://fonts.googleapis.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com data:;
+    img-src 'self' data: https: http: blob:;
+    connect-src 'self' http://localhost:* http://127.0.0.1:* http://20.197.35.236:* https://* http://* ws://localhost:* ws://127.0.0.1:* ws://20.197.35.236:* wss://*;
+    frame-src 'self' https:;
+    object-src 'none';
+    base-uri 'self';
+  ">
+  
   <!-- Google Fonts - Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
