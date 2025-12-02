@@ -217,16 +217,22 @@ const Courses = () => {
       normalizedSearch.length === 0 ||
       valuesToSearch.some((value) => value.toLowerCase().includes(normalizedSearch));
 
+    // Handle null/undefined values in course fields
     const matchesCategory =
-      !filterCategory || filterCategory === 'all' || course.courseCategoryId === filterCategory;
+      !filterCategory || 
+      (course.courseCategoryId && course.courseCategoryId === filterCategory);
+    
     const matchesLevel =
-      !filterLevel || filterLevel === 'all' || course.courseLevelId === filterLevel;
+      !filterLevel || 
+      (course.courseLevelId && course.courseLevelId === filterLevel);
+    
     const matchesType =
-      !filterType || filterType === 'all' || course.courseTypeId === filterType;
+      !filterType || 
+      (course.courseTypeId && course.courseTypeId === filterType);
+    
     const matchesOrganization =
       !filterOrganization ||
-      filterOrganization === 'all' ||
-      (course.organizationId || course.universityId) === filterOrganization;
+      ((course.organizationId || course.universityId) === filterOrganization);
 
     return matchesSearch && matchesCategory && matchesLevel && matchesType && matchesOrganization;
   });
