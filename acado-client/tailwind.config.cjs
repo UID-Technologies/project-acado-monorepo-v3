@@ -29,6 +29,12 @@ module.exports = {
 				'Segoe UI Symbol',
 				'Noto Color Emoji'
 			],
+			display: [
+				'Inter',
+				'ui-sans-serif',
+				'system-ui',
+				'sans-serif'
+			],
 			serif: [
 				'ui-serif',
 				'Georgia',
@@ -38,6 +44,7 @@ module.exports = {
 				'serif'
 			],
 			mono: [
+				'Fira Code',
 				'ui-monospace',
 				'SFMono-Regular',
 				'Menlo',
@@ -56,6 +63,23 @@ module.exports = {
 			xl: '1280px',
 			'2xl': '1536px'
 		},
+		container: {
+			center: true,
+			padding: {
+				DEFAULT: '1rem',
+				sm: '1.5rem',
+				lg: '2rem',
+				xl: '2.5rem',
+				'2xl': '3rem',
+			},
+			screens: {
+				sm: '640px',
+				md: '768px',
+				lg: '1024px',
+				xl: '1280px',
+				'2xl': '1400px',
+			},
+		},
 		extend: {
 			colors: {
 				dark: '#0b0b0b',
@@ -66,6 +90,17 @@ module.exports = {
 				textLight: '#1D1D1D',
 				textHover: '#7C57FC',
 				primary: {
+					50: '#EFF6FF',
+					100: '#DBEAFE',
+					200: '#BFDBFE',
+					300: '#93C5FD',
+					400: '#60A5FA',
+					500: '#3B82F6',
+					600: '#2563EB',
+					700: '#1D4ED8',
+					800: '#1E40AF',
+					900: '#1E3A8A',
+					950: '#172554',
 					DEFAULT: 'var(--primary)',
 					foreground: 'var(--primary-foreground)'
 				},
@@ -147,8 +182,87 @@ module.exports = {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			}
+				sm: 'calc(var(--radius) - 4px)',
+				xl: '1rem',
+				'2xl': '1.5rem',
+				'3xl': '2rem',
+			},
+			boxShadow: {
+				'soft': '0 2px 8px 0 rgba(0, 0, 0, 0.08)',
+				'soft-md': '0 4px 12px 0 rgba(0, 0, 0, 0.1)',
+				'soft-lg': '0 8px 24px 0 rgba(0, 0, 0, 0.12)',
+				'soft-xl': '0 12px 32px 0 rgba(0, 0, 0, 0.14)',
+				'glow': '0 0 20px rgba(59, 130, 246, 0.3)',
+				'glow-lg': '0 0 40px rgba(59, 130, 246, 0.4)',
+				'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+			},
+			animation: {
+				'fade-in': 'fadeIn 0.3s ease-in-out',
+				'fade-out': 'fadeOut 0.3s ease-in-out',
+				'slide-in-up': 'slideInUp 0.4s ease-out',
+				'slide-in-down': 'slideInDown 0.4s ease-out',
+				'slide-in-left': 'slideInLeft 0.4s ease-out',
+				'slide-in-right': 'slideInRight 0.4s ease-out',
+				'scale-in': 'scaleIn 0.3s ease-out',
+				'bounce-soft': 'bounceSoft 0.6s ease-in-out',
+				'shimmer': 'shimmer 2s linear infinite',
+			},
+			keyframes: {
+				fadeIn: {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' },
+				},
+				fadeOut: {
+					'0%': { opacity: '1' },
+					'100%': { opacity: '0' },
+				},
+				slideInUp: {
+					'0%': { transform: 'translateY(20px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' },
+				},
+				slideInDown: {
+					'0%': { transform: 'translateY(-20px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' },
+				},
+				slideInLeft: {
+					'0%': { transform: 'translateX(-20px)', opacity: '0' },
+					'100%': { transform: 'translateX(0)', opacity: '1' },
+				},
+				slideInRight: {
+					'0%': { transform: 'translateX(20px)', opacity: '0' },
+					'100%': { transform: 'translateX(0)', opacity: '1' },
+				},
+				scaleIn: {
+					'0%': { transform: 'scale(0.95)', opacity: '0' },
+					'100%': { transform: 'scale(1)', opacity: '1' },
+				},
+				bounceSoft: {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
+				},
+				shimmer: {
+					'0%': { backgroundPosition: '-1000px 0' },
+					'100%': { backgroundPosition: '1000px 0' },
+				},
+			},
+			spacing: {
+				'18': '4.5rem',
+				'88': '22rem',
+				'100': '25rem',
+				'112': '28rem',
+				'128': '32rem',
+			},
+			maxWidth: {
+				'8xl': '88rem',
+				'9xl': '96rem',
+			},
+			zIndex: {
+				'60': '60',
+				'70': '70',
+				'80': '80',
+				'90': '90',
+				'100': '100',
+			},
 		}
 	},
 	plugins: [

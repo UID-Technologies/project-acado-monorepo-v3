@@ -197,27 +197,51 @@ const HeroSection2: React.FC = () => {
                                         <div className="relative lg:block hidden h-full">
                                             <div className="absolute inset-0 h-full">
 
-                                                <img className=' relative top-10 repeat-0 ' src="https://nlmscdnawsbackup.blob.core.windows.net/nlms-cdn/media/8mynY3UJfqYJIyy7yYuJb627qPUyEhkepW8IWKu2.png" />
+                                                <img className=' relative top-10 repeat-0 ' src="https://nlmscdnawsbackup.blob.core.windows.net/nlms-cdn/media/8mynY3UJfqYJIyy7yYuJb627qPUyEhkepW8IWKu2.png" alt="Background decoration" />
                                                 {/* Diagonal clip effect */}
                                                 <div
                                                     className="absolute inset-0 h-full overflow-hidden"
                                                 >
-                                                    <img
-                                                        src={course?.image}
-                                                        alt={course.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
+                                                    {(course?.image || course?.bannerImage || course?.thumbnail) ? (
+                                                        <img
+                                                            src={course?.image || course?.bannerImage || course?.thumbnail}
+                                                            alt={course.name}
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                // Fallback to placeholder if image fails to load
+                                                                e.currentTarget.src = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop';
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center">
+                                                            <div className="text-center text-white p-8">
+                                                                <h3 className="text-2xl font-bold">{course.name}</h3>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Mobile Image */}
                                         <div className="lg:hidden relative w-full md:h-[250px] sm:h-[300px] overflow-hidden">
-                                            <img
-                                                src={course?.image}
-                                                alt={course.name}
-                                                className="w-full h-full object-cover"
-                                            />
+                                            {(course?.image || course?.bannerImage || course?.thumbnail) ? (
+                                                <img
+                                                    src={course?.image || course?.bannerImage || course?.thumbnail}
+                                                    alt={course.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        // Fallback to placeholder if image fails to load
+                                                        e.currentTarget.src = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center">
+                                                    <div className="text-center text-white p-8">
+                                                        <h3 className="text-xl font-bold">{course.name}</h3>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
