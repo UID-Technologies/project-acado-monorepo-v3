@@ -174,8 +174,21 @@
     "vite": "^6.0.6",
     "vite-plugin-dynamic-import": "^1.6.0"
   },
-  "resolutions": {
+  "overrides": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@hello-pangea/dnd": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    },
+    "@react-pdf-viewer/core": {
+      "pdfjs-dist": "^5.4.394"
+    },
+    "@react-pdf-viewer/default-layout": {
+      "pdfjs-dist": "^5.4.394"
+    },
+    "@react-pdf-viewer/toolbar": {
+      "pdfjs-dist": "^5.4.394"
+    }
   }
 }
