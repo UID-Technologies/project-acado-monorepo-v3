@@ -119,7 +119,7 @@ const publicRoute: Routes = [
     {
         key: 'course-show-public',
         path: '/course/:course_id',
-        component: lazy(() => import('@public/Course/WpShow')),
+        component: lazy(() => import('@public/Course/WPShow')),
         authority: [],
     },
     {
