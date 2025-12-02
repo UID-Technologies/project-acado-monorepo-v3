@@ -84,29 +84,30 @@ services:
 
   # =============================================================================
   # ACADO Client - Client-facing Application (React + Vite)
+  # TEMPORARILY COMMENTED OUT - Case sensitivity issues being fixed
   # =============================================================================
-  acado-client:
-    build:
-      context: ../acado-client
-      dockerfile: ../deploy/Dockerfile.client
-      platforms:
-        - linux/arm64
-      args:
-        - VITE_API_BASE_URL=${CLIENT_API_URL:-http://localhost:5000}
-        - VITE_APP_URL=${CLIENT_APP_URL:-http://localhost}
-    container_name: acado-client
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    depends_on:
-      - acado-api
-    networks:
-      - acado-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # acado-client:
+  #   build:
+  #     context: ../acado-client
+  #     dockerfile: ../deploy/Dockerfile.client
+  #     platforms:
+  #       - linux/arm64
+  #     args:
+  #       - VITE_API_BASE_URL=${CLIENT_API_URL:-http://localhost:5000}
+  #       - VITE_APP_URL=${CLIENT_APP_URL:-http://localhost}
+  #   container_name: acado-client
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - acado-api
+  #   networks:
+  #     - acado-network
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
 # =============================================================================
 # Networks
