@@ -10,6 +10,7 @@ const normalizedBaseUrl = envConfig.apiBaseUrl.replace(/\/$/, '')
 const AxiosBase = axios.create({
     timeout: 60000,
     baseURL: `${normalizedBaseUrl}${appConfig.apiPrefix}`,
+    withCredentials: true, // Enable cookies for refresh tokens
 })
 
 AxiosBase.interceptors.request.use(

@@ -146,7 +146,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                     }
                 }
 
-                if (!(resp?.data?.token && resp?.data?.user)) {
+                if (!(resp?.data?.accessToken && resp?.data?.user)) {
                     setLoginAttempts((prev) => prev + 1)
                     if (loginAttempts + 1 >= MAX_ATTEMPTS) {
                         setIsDisabled(true)
@@ -169,7 +169,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                     }
                 }
 
-                handleSignIn({ accessToken: resp?.data?.token }, resp?.data?.user)
+                handleSignIn({ accessToken: resp?.data?.accessToken }, resp?.data?.user)
                 redirect();
                 return {
                     status: 1,
@@ -218,7 +218,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                     }
                 }
 
-                if (!(resp?.data?.token && resp?.data?.user)) {
+                if (!(resp?.data?.accessToken && resp?.data?.user)) {
                     return {
                         status: 0,
                         message: resp.error,
@@ -226,7 +226,7 @@ function AuthProvider({ children }: AuthProviderProps) {
                     }
                 }
 
-                handleSignIn({ accessToken: resp.data.token }, resp.data.user)
+                handleSignIn({ accessToken: resp.data.accessToken }, resp.data.user)
                 redirect()
                 return {
                     status: 1,

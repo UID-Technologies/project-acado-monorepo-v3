@@ -14,7 +14,8 @@ export async function apiSignIn(data: SignInCredential) {
     return ApiService.fetchDataWithAxios<SignInResponse>({
         url: endpointConfig.signIn,
         method: 'post',
-        data
+        data,
+        withCredentials: true, // Important for cookies (refresh token)
     })
 }
 
@@ -23,6 +24,7 @@ export async function apiSignUp(data: SignUpCredential) {
         url: endpointConfig.signUp,
         method: 'post',
         data,
+        withCredentials: true, // Important for cookies (refresh token)
     })
 }
 
@@ -30,6 +32,7 @@ export async function apiSignOut() {
     return ApiService.fetchDataWithAxios({
         url: endpointConfig.signOut,
         method: 'post',
+        withCredentials: true, // Important for cookies (refresh token)
     })
 }
 

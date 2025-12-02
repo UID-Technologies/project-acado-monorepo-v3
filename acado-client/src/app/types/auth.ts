@@ -9,66 +9,28 @@ export type googleOauthSignIn = {
     token: string,
 }
 
+// Acado API response format
+export type AcadoApiUser = {
+    id: string
+    email: string
+    name: string
+    username?: string
+    role: string
+    organizationId?: string
+    organizationName?: string
+    universityIds?: string[]
+    courseIds?: string[]
+    isActive: boolean
+    createdAt: string
+    updatedAt: string
+}
+
 export type SignInResponse = {
     status: number,
     error: string,
     data: {
-        token: string,
-        user: {
-            userId?: string | null
-            avatar?: string | null
-            userName?: string | null
-            authority?: string[]
-            // api
-            id: number | null,
-            organization_id: number,
-            name: string,
-            email: string,
-            status: string,
-            department: string,
-            designation: string,
-            mec_regd_id: string,
-            sso_token: string,
-            role: string,
-            mobile_no: number,
-            locale: string,
-            username: string,
-            is_trainer: number,
-            is_ignite_user: number,
-            profile_image: string,
-            language_id: number,
-            english_name: string,
-            is_primary_language: number,
-            show_interest: number,
-            category_ids: string,
-            default_video_url_on_category: string,
-            wp_center_id: number | null,
-            wp_course_id: number | null,
-            is_kyc_verifed?: number
-            abc_id?: string
-            aadhaar_number?: string
-            profile_svc_editkey?: string
-            show_course_reg?: string
-            permanent_address?: string
-            isPersonalEmailVerified?: number
-            isPersonalPhoneVerified?: number
-            isUserConsentTaken?: number
-            isUserWhatsappConsentTaken?: number
-            alternate_email?: string
-            enrollment_number?: string
-            date_of_birth?: string
-            gender?: string
-            father_email_verified?: number
-            father_mobile_verified?: number
-            mother_email_verified?: number
-            mother_mobile_verified?: number
-            guardian_email_verified?: number
-            guardian_mobile_verified?: number
-            is_interest_save?: boolean
-            org_logo?: string
-            org_name?: string
-            user_org_type?: 'industry' | 'coe' | 'institute' | 'university'
-        }
+        accessToken: string
+        user: AcadoApiUser
     }
 }
 
@@ -78,22 +40,10 @@ export type SignUpCredential = {
     name: string
     email: string
     password: string
-    // extra fields
-    dob: string
-    profilePic: string,
-    first_name: string,
-    last_name: string,
-    gender: string,
-    mobile_no: string,
-    alternate_mobile_no: string,
-    email_address: string,
-    date_of_birth: string,
-    db_code: string,
-    username: string,
-    locale: string,
-    created_timezone: string,
-    wp_center_id: number | null,
-    wp_course_id: number | null,
+    username?: string
+    organizationId: string
+    universityId: string
+    courseIds?: string[]
 }
 
 export type ForgotPassword = {
@@ -112,61 +62,7 @@ export type AuthResult = Promise<{
     error: string
 }>
 
-export type User = {
-    userId?: string | null
-    avatar?: string | null
-    userName?: string | null
-    authority?: string[]
-    // api
-    id: number | null,
-    organization_id: number,
-    name: string,
-    email: string,
-    status: string,
-    department: string,
-    designation: string,
-    mec_regd_id: string,
-    sso_token: string,
-    role: string,
-    mobile_no: number,
-    locale: string,
-    username: string,
-    is_trainer: number,
-    is_ignite_user: number,
-    profile_image: string,
-    language_id: number,
-    english_name: string,
-    is_primary_language: number,
-    show_interest: number,
-    category_ids: string,
-    default_video_url_on_category: string,
-    wp_center_id: number | null,
-    wp_course_id: number | null,
-    is_kyc_verifed?: number
-    abc_id?: string
-    aadhaar_number?: string
-    profile_svc_editkey?: string
-    show_course_reg?: string
-    permanent_address?: string
-    isPersonalEmailVerified?: number
-    isPersonalPhoneVerified?: number
-    isUserConsentTaken?: number
-    isUserWhatsappConsentTaken?: number
-    alternate_email?: string
-    enrollment_number?: string
-    date_of_birth?: string
-    gender?: string
-    father_email_verified?: number
-    father_mobile_verified?: number
-    mother_email_verified?: number
-    mother_mobile_verified?: number
-    guardian_email_verified?: number
-    guardian_mobile_verified?: number
-    is_interest_save?: boolean
-    org_logo?: string
-    org_name?: string
-    user_org_type?: 'industry' | 'coe' | 'institute' | 'university'
-}
+export type User = AcadoApiUser
 
 export type Token = {
     accessToken: string
