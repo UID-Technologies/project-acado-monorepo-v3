@@ -14,6 +14,7 @@ This guide covers deploying the ACADO platform (acado-api, acado-admin, acado-cl
 │  │   (React)   │  │   (React)   │  │  (Node.js)  │              │
 │  │   Port 80   │  │  Port 8080  │  │  Port 5000  │              │
 │  │   nginx     │  │   nginx     │  │   express   │              │
+│  │   ✅ ACTIVE │  │   ✅ ACTIVE │  │   ✅ ACTIVE │              │
 │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘              │
 │         │                │                │                      │
 │         └────────────────┴────────────────┘                      │
@@ -22,10 +23,13 @@ This guide covers deploying the ACADO platform (acado-api, acado-admin, acado-cl
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │                MongoDB (Local on Host)                   │    │
 │  │                    Port 27017                            │    │
+│  │                    ✅ RUNNING                            │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+**Status:** All three containers ready for deployment!
 
 ## Prerequisites
 
