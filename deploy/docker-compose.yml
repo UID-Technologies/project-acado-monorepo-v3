@@ -1,0 +1,124 @@
+# Docker Compose for ACADO Platform
+# Deploys acado-api, acado-admin, acado-client on ARM64 Azure Ubuntu VM
+# MongoDB runs locally on the host (not in container)
+#
+# Usage:
+#   docker-compose up -d --build
+#
+# Prerequisites:
+#   - Docker & Docker Compose installed on Azure VM
+#   - MongoDB installed and running locally on the VM
+#   - Ports 80, 8080, 5000 available
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # ACADO API - Backend Node.js Application
+  # =============================================================================
+  acado-api:
+    build:
+      context: ../acado-api
+      dockerfile: ../deploy/Dockerfile.api
+      platforms:
+        - linux/arm64
+    container_name: acado-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://host.docker.internal:27017/acadodb
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      # Azure Blob Storage (optional)
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING:-}
+      - AZURE_STORAGE_CONTAINER_NAME=${AZURE_STORAGE_CONTAINER_NAME:-uploads}
+      # Email Configuration (optional)
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - EMAIL_FROM=${EMAIL_FROM:-noreply@acado.ai}
+    extra_hosts:
+      # Allows container to access host's localhost (MongoDB)
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - api-uploads:/app/uploads
+    networks:
+      - acado-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # =============================================================================
+  # ACADO Admin - Admin Dashboard (React + Vite)
+  # =============================================================================
+  acado-admin:
+    build:
+      context: ../acado-admin
+      dockerfile: ../deploy/Dockerfile.admin
+      platforms:
+        - linux/arm64
+      args:
+        - VITE_API_BASE_URL=${ADMIN_API_URL:-http://localhost:5000}
+    container_name: acado-admin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - acado-api
+    networks:
+      - acado-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =============================================================================
+  # ACADO Client - Client-facing Application (React + Vite)
+  # =============================================================================
+  acado-client:
+    build:
+      context: ../acado-client
+      dockerfile: ../deploy/Dockerfile.client
+      platforms:
+        - linux/arm64
+      args:
+        - VITE_API_BASE_URL=${CLIENT_API_URL:-http://localhost:5000}
+        - VITE_APP_URL=${CLIENT_APP_URL:-http://localhost}
+    container_name: acado-client
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - acado-api
+    networks:
+      - acado-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  acado-network:
+    driver: bridge
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  api-uploads:
+    driver: local
+
