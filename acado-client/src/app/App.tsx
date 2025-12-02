@@ -4,15 +4,12 @@ import Theme from '@/components/template/Theme'
 import Layout from '@layouts'
 import { AuthProvider } from '@app/providers/auth'
 import Views from '@features'
-import appConfig from '@app/config/app.config'
 import '@app/config/locales'
 import { SnackbarProvider } from "notistack";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-if (appConfig.enableMock) {
-    import('../mock')
-}
+// Mock is only loaded in development - excluded from production builds via .dockerignore
 const queryClient = new QueryClient(
     {
         defaultOptions: {
