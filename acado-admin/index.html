@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="https://acado.ai/favicon.ico" />
     
-    <!-- Content Security Policy: Allow ELMS API connections -->
-    <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://elms.acado.ai https://acado.ai http://localhost:* http://57.159.29.149:* ws://localhost:* ws://57.159.29.149:*">
+    <!-- Content Security Policy: Allow API connections from any HTTP source -->
+    <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://* http://* ws://* wss://*">
     
     <title>Acado.ai</title>
     <meta name="description" content="Acado.ai - Form Builder and Application Management System" />
