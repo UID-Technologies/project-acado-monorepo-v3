@@ -133,7 +133,7 @@ const publicRoute: Routes = [
         path: '/user-form',
         component: lazy(() => import('@public/Form')),
         authority: [],
-    },
+    }
 ]
 
 export default publicRoute
