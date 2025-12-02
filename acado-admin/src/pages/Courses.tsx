@@ -270,7 +270,7 @@ const Courses = () => {
           <Filter className="w-4 h-4 text-muted-foreground" />
           <span className="text-sm font-medium">Filters:</span>
           <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-2">
-            <Select value={filterCategory} onValueChange={setFilterCategory}>
+            <Select value={filterCategory || undefined} onValueChange={(val) => setFilterCategory(val === 'all' ? '' : val)}>
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
@@ -284,7 +284,7 @@ const Courses = () => {
               </SelectContent>
             </Select>
 
-            <Select value={filterLevel} onValueChange={setFilterLevel}>
+            <Select value={filterLevel || undefined} onValueChange={(val) => setFilterLevel(val === 'all' ? '' : val)}>
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Level" />
               </SelectTrigger>
@@ -298,7 +298,7 @@ const Courses = () => {
               </SelectContent>
             </Select>
 
-            <Select value={filterType} onValueChange={setFilterType}>
+            <Select value={filterType || undefined} onValueChange={(val) => setFilterType(val === 'all' ? '' : val)}>
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
@@ -312,7 +312,7 @@ const Courses = () => {
               </SelectContent>
             </Select>
 
-            <Select value={filterOrganization} onValueChange={setFilterOrganization}>
+            <Select value={filterOrganization || undefined} onValueChange={(val) => setFilterOrganization(val === 'all' ? '' : val)}>
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="University" />
               </SelectTrigger>
