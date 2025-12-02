@@ -1,32 +1,30 @@
-# Akedo Monorepo
+# ACADO Monorepo
 
-Akedo is an end‑to‑end admissions/workflow platform composed of a React admin UI, a TypeScript/Node backend, and supporting SSO/utility apps. This repository maintains **all** source, deployment manifests, CI/CD pipelines, and runbooks so it can serve as the single source of truth for engineers and operators.
+ACADO is an end‑to‑end admissions/workflow platform composed of a React admin UI, a React client app, a TypeScript/Node backend API, and supporting utilities. This repository maintains **all** source, deployment manifests, CI/CD pipelines, and runbooks so it can serve as the single source of truth for engineers and operators.
 
 ---
 
 ## 📖 Table of Contents
 
-- [Akedo Monorepo](#akedo-monorepo)
+- [ACADO Monorepo](#acado-monorepo)
   - [📖 Table of Contents](#-table-of-contents)
-  - [🚨 Important: Deployment Files Moved](#-important-deployment-files-moved)
-    - [Quick Links:](#quick-links)
-    - [What Changed:](#what-changed)
-    - [New Commands:](#new-commands)
+  - [🚀 Quick Start - Docker Deployment](#-quick-start---docker-deployment)
   - [System Overview](#system-overview)
   - [Repository Layout](#repository-layout)
   - [Core Services](#core-services)
+  - [🐳 Docker Deployment (ARM64 Azure VM)](#-docker-deployment-arm64-azure-vm)
+    - [Architecture](#architecture)
+    - [Prerequisites](#prerequisites)
+    - [Deployment Steps](#deployment-steps)
+    - [Management Commands](#management-commands)
+    - [Access URLs](#access-urls)
   - [Environments \& Pipelines](#environments--pipelines)
   - [Secrets \& Configuration](#secrets--configuration)
-  - [Deployment Playbook](#deployment-playbook)
-    - [Staging](#staging)
-    - [Production](#production)
-    - [Manual Redeploy / Rollback](#manual-redeploy--rollback)
-    - [Runner / VM Requirements (high level)](#runner--vm-requirements-high-level)
   - [Local Development](#local-development)
-    - [Backend (`backend-services/`)](#backend-backend-services)
-    - [Frontend (`web-admin/`)](#frontend-web-admin)
-    - [SSO Helper (`sso-app/`)](#sso-helper-sso-app)
-    - [Dockerized Local Stack](#dockerized-local-stack)
+    - [Backend (`acado-api/`)](#backend-acado-api)
+    - [Admin Dashboard (`acado-admin/`)](#admin-dashboard-acado-admin)
+    - [Client App (`acado-client/`)](#client-app-acado-client)
+    - [Full Docker Stack (Local)](#full-docker-stack-local)
   - [Infrastructure Prerequisites](#infrastructure-prerequisites)
   - [Monitoring \& Troubleshooting](#monitoring--troubleshooting)
   - [Documentation \& Support](#documentation--support)
@@ -35,245 +33,284 @@ Akedo is an end‑to‑end admissions/workflow platform composed of a React admi
     - [Legacy Documentation](#legacy-documentation)
     - [Export with MongoDB URI](#export-with-mongodb-uri)
     - [Import with MongoDB URI](#import-with-mongodb-uri)
+- [1. Initial VM setup (run once)](#1-initial-vm-setup-run-once)
+- [2. Configure environment](#2-configure-environment)
+- [3. Deploy](#3-deploy)
+- [4. Initialize database](#4-initialize-database)
 
 ---
 
-## 🚨 Important: Deployment Files Moved
+## 🚀 Quick Start - Docker Deployment
 
-**All deployment configurations have been reorganized into the `deploy/` folder** to keep the root directory clean and fix critical deployment issues.
+Deploy the entire ACADO platform on an Azure Ubuntu VM (ARM64) with a single command:
 
-### Quick Links:
-- **📚 Complete Deployment Guide**: [deploy/README.md](./deploy/README.md)
-- **⚡ Quick Start**: [deploy/QUICK_START.md](./deploy/QUICK_START.md)
-- **🔧 Issues Fixed**: [deploy/FIXES_APPLIED.md](./deploy/FIXES_APPLIED.md)
-- **📋 Deployment Overview**: [DEPLOYMENT.md](./DEPLOYMENT.md)
-
-### What Changed:
-- ✅ All docker-compose files moved to `deploy/` folder
-- ✅ Fixed critical port mismatches (4000 vs 5000)
-- ✅ Fixed network configuration issues
-- ✅ Added complete local development environment
-- ✅ Improved GitHub Actions workflows
-- ✅ Added comprehensive documentation
-
-### New Commands:
 ```bash
-# Local development (includes MongoDB)
-cd deploy && docker compose -f docker-compose.local.yml up -d
+# 1. Initial VM setup (run once)
+sudo ./deploy/scripts/setup-vm.sh
 
-# Manual staging deployment
-cd deploy && docker compose -f docker-compose.staging.yml up -d
+# 2. Configure environment
+cd deploy
+cp env.template .env
+nano .env  # Update JWT_SECRET and API URLs with your VM's IP
 
-# Manual production deployment
-cd deploy && docker compose -f docker-compose.prod.yml up -d
+# 3. Build and deploy all containers
+./scripts/deploy.sh up
+
+# 4. Initialize database with test data
+./scripts/deploy.sh init-db
 ```
+
+**Access URLs after deployment:**
+| Service | URL | Description |
+|---------|-----|-------------|
+| Client App | `http://<vm-ip>:80` | Main client application |
+| Admin Dashboard | `http://<vm-ip>:8080` | Admin management portal |
+| API | `http://<vm-ip>:5000` | Backend REST API |
+| API Docs | `http://<vm-ip>:5000/api-docs` | Swagger documentation |
 
 ---
 
 ## System Overview
 
 ```
-          ┌────────────┐        ┌───────────────┐        ┌──────────────┐
-User ---> │  Web Admin │ <----> │   Backend     │ <----> │   MongoDB     │
-          │ (React 18) │        │ (Express API) │        │  Replica/VM   │
-          └─────▲──────┘        └──────▲────────┘        └──────▲────────┘
-                │                      │                         │
-                │                      │                         │
-          ┌─────▼──────┐         ┌─────▼──────┐           ┌──────▼──────┐
-          │   SSO App  │         │ Azure Blob │           │  External   │
-          │  (static)  │         │   Storage   │           │ Integrations│
-          └────────────┘         └─────────────┘           └─────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     Azure Ubuntu VM (ARM64)                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
+│  │acado-client │  │ acado-admin │  │  acado-api  │              │
+│  │   (React)   │  │   (React)   │  │  (Node.js)  │              │
+│  │   Port 80   │  │  Port 8080  │  │  Port 5000  │              │
+│  │   nginx     │  │   nginx     │  │   express   │              │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘              │
+│         │                │                │                      │
+│         └────────────────┴────────────────┘                      │
+│                          │                                       │
+│                          ▼                                       │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                MongoDB (Local on Host)                   │    │
+│  │                    Port 27017                            │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-- **Web Admin**: Vite + React UI for admissions teams.
-- **Backend Services**: Node/Express REST API with Mongoose, JWT auth, RBAC, Azure Blob uploads.
-- **MongoDB**: Hosted on the same VM (DevOps) or external cluster.
-- **SSO App**: Optional static helper to pre-auth users.
+- **acado-client**: Vite + React client-facing application for learners.
+- **acado-admin**: Vite + React admin dashboard for admissions teams.
+- **acado-api**: Node/Express REST API with TypeScript, Mongoose, JWT auth, RBAC, Azure Blob uploads.
+- **MongoDB**: Installed locally on the VM (not containerized).
 
-All services are containerized and orchestrated via Docker Compose on self-hosted Azure VMs. GitHub Actions handles deployments through self-hosted runners.
+All services are containerized and orchestrated via Docker Compose on Azure VMs.
 
 ---
 
 ## Repository Layout
 
 ```
-acedo-monorepo/
-├── backend-services/           # Node/Express API (TypeScript)
-├── web-admin/                  # React admin application (Vite + TS)
-├── sso-app/                    # Optional static SSO helper
-├── acadmy-configurator-main/   # Legacy configurator prototype (archive)
-├── deploy/                     # 🆕 All deployment files (docker-compose, env examples, docs)
-│   ├── docker-compose.local.yml
-│   ├── docker-compose.staging.yml
-│   ├── docker-compose.prod.yml
-│   ├── env/
-│   │   ├── backend.staging.env.example
-│   │   └── backend.prod.env.example
-│   ├── mongo-init.js
-│   ├── README.md              # Detailed deployment guide
-│   ├── QUICK_START.md         # Quick start commands
-│   └── FIXES_APPLIED.md       # Issues resolved
-├── .github/workflows/          # GitHub Actions workflows (deploy-staging/prod)
-├── DEPLOYMENT.md               # Deployment overview
-├── backup/                     # Legacy deployment docs
+project-acado-monorepo/
+├── acado-api/                  # Node/Express API (TypeScript)
+│   ├── src/                    # Source code
+│   ├── scripts/                # Database scripts
+│   │   ├── create-test-users.js
+│   │   └── generate-sample-data.js
+│   ├── Dockerfile              # API container build
+│   └── package.json
+├── acado-admin/                # React admin dashboard (Vite + TS)
+│   ├── src/                    # Source code
+│   ├── nginx.conf              # Nginx config for production
+│   └── package.json
+├── acado-client/               # React client application (Vite + TS)
+│   ├── src/                    # Source code
+│   ├── nginx/                  # Nginx configs
+│   └── package.json
+├── deploy/                     # 🐳 Docker deployment files
+│   ├── docker-compose.yml      # Main orchestration file
+│   ├── Dockerfile.api          # API container
+│   ├── Dockerfile.admin        # Admin container
+│   ├── Dockerfile.client       # Client container
+│   ├── env.template            # Environment variables template
+│   ├── nginx/                  # Nginx configurations
+│   │   └── client.conf
+│   ├── scripts/
+│   │   ├── deploy.sh           # Deployment helper script
+│   │   └── setup-vm.sh         # Azure VM setup script
+│   └── README.md               # Detailed deployment guide
+├── .github/workflows/          # GitHub Actions (CI/CD)
 └── README.md                   # You are here
 ```
 
-Each application folder contains its own README for deep dives (API endpoints, UI guides, etc.), while this root README summarizes the cross-cutting concerns.
+Each application folder contains its own README for API endpoints, UI guides, and configuration details.
 
 ---
 
 ## Core Services
 
-| Service | Path | Highlights | Default Ports |
-|---------|------|------------|---------------|
-| Backend API | `backend-services/` | Express + TypeScript, JWT auth, RBAC, Azure Blob uploads, OpenAPI docs | `5000` (Docker) |
-| Web Admin | `web-admin/` | React 18, Vite, Tailwind, API client libs, admissions dashboards | `8081→80` |
-| SSO Helper | `sso-app/` | Static HTML/JS, optional login entry point | `3000` (when hosted separately) |
+| Service | Path | Highlights | Port |
+|---------|------|------------|------|
+| **acado-api** | `acado-api/` | Express + TypeScript, JWT auth, RBAC, Azure Blob uploads, OpenAPI docs | `5000` |
+| **acado-admin** | `acado-admin/` | React 19, Vite, Tailwind, shadcn/ui, Admin dashboards | `8080` |
+| **acado-client** | `acado-client/` | React 19, Vite, Tailwind, Client-facing app | `80` |
 
-Refer to `backend-services/README.md` and `web-admin/README.md` for service-specific configuration and scripts.
+Refer to each folder's README for service-specific configuration and development scripts.
+
+---
+
+## 🐳 Docker Deployment (ARM64 Azure VM)
+
+### Architecture
+
+The deployment uses Docker Compose to run three containers:
+- **acado-client**: Nginx serving React SPA on port 80
+- **acado-admin**: Nginx serving React SPA on port 8080
+- **acado-api**: Node.js Express API on port 5000
+
+MongoDB runs locally on the host VM (not containerized) for better performance and easier backup management.
+
+### Prerequisites
+
+1. **Azure Ubuntu VM (ARM64)**
+   - Ubuntu 22.04 LTS
+   - Minimum: 2 vCPU, 4GB RAM
+   - Open ports: 22, 80, 8080, 5000
+
+2. **Docker & Docker Compose** - Installed via setup script
+3. **MongoDB 7.0** - Installed locally via setup script
+
+### Deployment Steps
+
+```bash
+# 1. Clone repository on VM
+cd /opt
+sudo git clone <your-repo-url> acado
+cd acado
+
+# 2. Run VM setup script (installs Docker, MongoDB, etc.)
+sudo ./deploy/scripts/setup-vm.sh
+
+# 3. Log out and back in (for Docker group permissions)
+exit
+ssh user@vm-ip
+
+# 4. Configure environment
+cd /opt/acado/deploy
+cp env.template .env
+nano .env
+```
+
+**Important environment variables to update:**
+```env
+# MUST CHANGE: JWT secret (min 32 characters)
+JWT_SECRET=your-secure-random-string-at-least-32-chars
+
+# Update with your Azure VM's public IP or domain
+ADMIN_API_URL=http://<your-vm-ip>:5000
+CLIENT_API_URL=http://<your-vm-ip>:5000
+CLIENT_APP_URL=http://<your-vm-ip>
+```
+
+```bash
+# 5. Deploy containers
+./scripts/deploy.sh up
+
+# 6. Initialize database with test data
+./scripts/deploy.sh init-db
+```
+
+### Management Commands
+
+```bash
+./scripts/deploy.sh up        # Build and start all containers
+./scripts/deploy.sh down      # Stop all containers
+./scripts/deploy.sh restart   # Restart all containers
+./scripts/deploy.sh logs      # View all container logs
+./scripts/deploy.sh logs api  # View specific service logs
+./scripts/deploy.sh rebuild   # Rebuild containers (no cache)
+./scripts/deploy.sh status    # Check container status
+./scripts/deploy.sh init-db   # Initialize test data
+./scripts/deploy.sh clean     # Clean unused Docker resources
+```
+
+### Access URLs
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| Client App | `http://<vm-ip>:80` | Main client application |
+| Admin Dashboard | `http://<vm-ip>:8080` | Admin management portal |
+| API | `http://<vm-ip>:5000` | Backend REST API |
+| API Docs | `http://<vm-ip>:5000/api-docs` | Swagger documentation |
+| Health Check | `http://<vm-ip>:5000/health` | API health endpoint |
+
+**Default Test Users (password: `Test123456`):**
+- Superadmin: `superadmin@test.com`
+- Admin: `admin@test.com`
+- Learner: `learner@test.com`
 
 ---
 
 ## Environments & Pipelines
 
-| Environment | Git Branch Trigger | GitHub Environment | Runner Labels | Compose File | Frontend API URL |
-|-------------|--------------------|--------------------|---------------|--------------|------------------|
-| Staging     | `staging`          | `staging`          | `self-hosted`, `acado-staging-runner` | `deploy/docker-compose.staging.yml` | `secrets.VITE_API_BASE_URL` |
-| Production  | `master` / `main`  | `production`       | `self-hosted`, `acado-prod-runner`  | `deploy/docker-compose.prod.yml`    | `secrets.VITE_API_BASE_URL` |
-
-Deployment workflow (`deploy-*.yml`) steps:
-1. Checkout repository on the VM runner.
-2. Create environment file in `deploy/env/` directory, populated from GitHub secrets.
-3. Build Docker images with proper build arguments (especially `VITE_API_BASE_URL`).
-4. Stop existing containers gracefully.
-5. Deploy new containers with health checks enabled.
-6. Verify backend and frontend health endpoints.
-7. Rollback automatically on failure (production only).
-8. Clean up old images on success.
-
-Every VM hosts both backend and frontend containers plus MongoDB (if using local Mongo). External databases can be supported by updating `MONGO_URI`.
-
-**📖 For detailed deployment instructions, see [deploy/README.md](./deploy/README.md)**
+| Environment | Compose File | Description |
+|-------------|--------------|-------------|
+| Local Dev | Native npm | Run services directly with hot reload |
+| Docker | `deploy/docker-compose.yml` | Full containerized deployment |
+| Production | `deploy/docker-compose.yml` | Production on Azure VM |
 
 ---
 
 ## Secrets & Configuration
 
-Each GitHub Environment (`staging`, `production`) **must** define the following secrets:
+Key environment variables (see `deploy/env.template` for full list):
 
-| Secret | Description | Example |
-|--------|-------------|---------|
-| `JWT_ACCESS_SECRET` | Access token signing key (generate with `openssl rand -hex 64`) | `abc123...` |
-| `JWT_REFRESH_SECRET` | Refresh token signing key (generate with `openssl rand -hex 64`) | `def456...` |
-| `CORS_ORIGIN` | Comma-delimited list of allowed origins | `http://vm-ip:8081,https://admin.example.com` |
-| `MONGO_URI` | MongoDB connection string (usually `mongodb://localhost:27017/acedodb` on VM) | `mongodb://localhost:27017/acedodb` |
-| `VITE_API_BASE_URL` | Backend API URL for frontend (set at build time) | `http://vm-ip:5000` or `https://api.example.com` |
-| `EMAIL_HOST` | SMTP server host (optional) | `smtp.gmail.com` |
-| `EMAIL_PORT` | SMTP port (optional) | `587` |
-| `EMAIL_SECURE` | Use TLS (optional) | `true` or `false` |
-| `EMAIL_USER` | Email username (optional) | `your-email@gmail.com` |
-| `EMAIL_PASSWORD` | Email password (optional) | Your password |
-| `EMAIL_FROM` | From address (optional) | `no-reply@example.com` |
-
-Optional host-level variables (set on the VM, not in GitHub):
-- `AZURE_CONTAINER_NAME`, `AZURE_STORAGE_ACCOUNT_URL` – only required if you need to override the defaults inside `backend-services`.
-
-**Secret Rotation:** Updating a secret in GitHub does **not** mutate running containers. After editing a secret, re-run the relevant deployment workflow (or push a new commit) so Compose rebuilds with the new value.
-
----
-
-## Deployment Playbook
-
-### Staging
-```bash
-git checkout staging
-# make changes...
-git push origin staging
-```
-GitHub Actions automatically runs `Deploy to Staging VM`. Monitor progress in the Actions tab; the workflow will exit non-zero if `/health` never succeeds.
-
-### Production
-```bash
-git checkout master
-# merge/pull latest main
-git push origin master
-```
-`Deploy to Production VM` runs automatically. Consider enabling branch protections or required reviews before pushing to `master/main`.
-
-### Manual Redeploy / Rollback
-- From a workflow run page click **Re-run all jobs** to redeploy the same commit.
-- To roll back, re-run the workflow from an earlier commit or cherry-pick the desired SHA onto the environment branch.
-- Emergency fallback: SSH into the VM, run `docker compose -f docker-compose.<env>.yml ps/logs`, adjust as needed, then trigger a clean redeploy from GitHub as soon as possible.
-
-### Runner / VM Requirements (high level)
-1. Ubuntu 20.04+ VM with Docker Engine and Docker Compose plugin installed (`sudo apt install docker-compose-plugin`).
-2. Local MongoDB running on the host (if not using a managed cluster) and listening on `0.0.0.0:27017`.
-3. GitHub Actions self-hosted runner configured with labels:
-   - Staging: `acado-staging-runner`
-   - Production: `acado-prod-runner`
-   - Install as service: `./svc.sh install && ./svc.sh start`
-4. Firewall openings for frontend (`8081`), backend (`5000`), and any external ingress you require.
-
-**📖 For complete step-by-step setup, see [deploy/README.md](./deploy/README.md)**
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `JWT_SECRET` | JWT signing key (min 32 chars) | `your-super-secret-key...` |
+| `JWT_EXPIRES_IN` | Token expiration | `7d` |
+| `MONGODB_URI` | MongoDB connection (auto-configured for host) | `mongodb://host.docker.internal:27017/acadodb` |
+| `CORS_ORIGIN` | Allowed origins | `*` |
+| `ADMIN_API_URL` | API URL for admin dashboard | `http://<vm-ip>:5000` |
+| `CLIENT_API_URL` | API URL for client app | `http://<vm-ip>:5000` |
+| `AZURE_STORAGE_CONNECTION_STRING` | Azure Blob storage (optional) | Connection string |
+| `SMTP_HOST` | Email server (optional) | `smtp.gmail.com` |
 
 ---
 
 ## Local Development
 
-### Backend (`backend-services/`)
+### Backend (`acado-api/`)
 ```bash
-cd backend-services
-cp env.example .env   # fill in local values
+cd acado-api
+cp env.example .env   # Configure local values
 npm install
-npm run dev           # nodemon + ts-node
+npm run dev           # Runs with tsx watch on http://localhost:5000
 ```
-- Runs on `http://localhost:5000`.
-- Connects to local Mongo (configure `MONGO_URI` in `.env`).
-- Exposes `/health`, `/api/v1/*`, and static swagger via `/docs` (if enabled).
 
-### Frontend (`web-admin/`)
+### Admin Dashboard (`acado-admin/`)
 ```bash
-cd web-admin
-cp env.example .env   # set VITE_API_BASE_URL to backend dev URL
+cd acado-admin
+cp env.example .env   # Set VITE_API_BASE_URL=http://localhost:5000
 npm install
-npm run dev           # Vite hot reload
+npm run dev           # Vite dev server on http://localhost:8080
 ```
-- Accessible at `http://localhost:5173` by default.
-- Uses Vite proxy or direct API calls depending on env variables.
 
-### SSO Helper (`sso-app/`)
+### Client App (`acado-client/`)
 ```bash
-cd sso-app
-npm install
-npm run dev # or serve sso.html statically via nginx/http-server
+cd acado-client
+cp env.example .env   # Configure API URL
+npm install --legacy-peer-deps
+npm run dev           # Vite dev server on http://localhost:5173
 ```
-Update `sso-config.js` with the correct frontend URL before building.
 
-### Dockerized Local Stack
-Complete local environment with MongoDB included:
-
+### Full Docker Stack (Local)
 ```bash
 cd deploy
-docker compose -f docker-compose.local.yml up -d
+cp env.template .env
+docker compose up -d --build
 ```
 
-This starts:
-- MongoDB on port 27017 (credentials: admin/adminpass)
-- Backend API on port 5000
-- Frontend on port 8081
-
-Access:
-- Frontend: http://localhost:8081
-- Backend API: http://localhost:5000
-- API Health: http://localhost:5000/health
-
-Stop with:
-```bash
-docker compose -f docker-compose.local.yml down
-```
-
-**📖 See [deploy/QUICK_START.md](./deploy/QUICK_START.md) for more options**
+Access locally:
+- Client: http://localhost:80
+- Admin: http://localhost:8080
+- API: http://localhost:5000
 
 ---
 
@@ -376,3 +413,30 @@ mongoimport --uri="mongodb://localhost:27017" --db acadodb --collection fields -
 mongoimport --uri="mongodb://localhost:27017" --db acadodb --collection universities --drop --file universities.json
 
 ```
+
+
+
+Prod server
+vm name = acado-prod
+user name = ubuntu
+pass = xD2vs5#MqH@X
+ip = 20.197.35.236
+
+ssh ubuntu@20.197.35.236
+
+
+
+Quick Start on Azure VM
+# 1. Initial VM setup (run once)
+sudo ./deploy/scripts/setup-vm.sh
+
+# 2. Configure environment
+cd deploy
+cp env.template .env
+nano .env  # Update JWT_SECRET and API URLs
+
+# 3. Deploy
+./scripts/deploy.sh up
+
+# 4. Initialize database
+./scripts/deploy.sh init-db
