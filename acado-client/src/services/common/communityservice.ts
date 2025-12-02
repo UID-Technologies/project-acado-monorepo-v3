@@ -1,18 +1,33 @@
 
 import { CommunitiesPostsApiResponse, CommunityCategory, CommunityCategoryApiResponse, CommunityDetailsList, CommunityMembersApiResponse, Domain, DomainApiResponse, EventApiResponse, Industry, IndustryApiResponse, IndustryPost, IndustryPostApiResponse, OrgCommunities, OrgCommunityApiResponse, Poll, PollApiResponse, PoppinTag, PoppinTagApiResponse, Post, PostComment, PostCommentsApiResponse, PostDetailApiResponse, RecCommunities, RecCommunityApiResponse, SubDomain, SubDomainApiResponse, TrendingCommunity, TrendingCommunityApiResponse, UserCommunityAnalytics, UserCommunityAnalyticsApiResponse } from '@app/types/common/community';
 import ApiService from '@services/ApiService'
+import { adaptCommunityPostsResponse, adaptCommunityCategoriesResponse } from '@/utils/communityResponseAdapter';
 
 
 export async function fetchPosts(params?: URLSearchParams): Promise<Post[]> {
     try {
-        const response = await ApiService.fetchDataWithAxios<CommunitiesPostsApiResponse>({
-            url: '/get-post',
-            method: 'post',
+        // Use new community-posts endpoint
+        const response = await ApiService.fetchDataWithAxios<any>({
+            url: '/community-posts',
+            method: 'get',
             params: params
-        })
-        return response?.data?.post ?? [];
+        });
+        
+        // Adapt response to legacy format
+        const adapted = adaptCommunityPostsResponse(response);
+        return adapted?.data?.post || [];
     } catch (error) {
-        throw error as string;
+        // Fallback to legacy endpoint (has social features)
+        try {
+            const response = await ApiService.fetchDataWithAxios<CommunitiesPostsApiResponse>({
+                url: '/get-post',
+                method: 'post',
+                params: params
+            });
+            return response?.data?.post ?? [];
+        } catch (fallbackError) {
+            throw error as string;
+        }
     }
 }
 
@@ -64,14 +79,27 @@ interface CommunityApiProps {
 
 export async function fetchCommunity(props: CommunityApiProps = { my_community: 0 }): Promise<CommunityCategory[]> {
     try {
-        const response = await ApiService.fetchDataWithAxios<CommunityCategoryApiResponse>({
-            url: '/user-joy-category',
-            method: 'post',
-            params: props
-        })
-        return response?.data
+        // Use new community-posts/categories endpoint
+        const response = await ApiService.fetchDataWithAxios<any>({
+            url: '/community-posts/categories',
+            method: 'get',
+        });
+        
+        // Adapt response to legacy format
+        const adapted = adaptCommunityCategoriesResponse(response);
+        return adapted?.data || [];
     } catch (error) {
-        throw error as string;
+        // Fallback to legacy endpoint (has member counts, etc.)
+        try {
+            const response = await ApiService.fetchDataWithAxios<CommunityCategoryApiResponse>({
+                url: '/user-joy-category',
+                method: 'post',
+                params: props
+            });
+            return response?.data;
+        } catch (fallbackError) {
+            throw error as string;
+        }
     }
 }
 

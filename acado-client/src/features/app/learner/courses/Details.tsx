@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { fetchCourseById } from '@services/public/CoursesService'
 import { useParams } from 'react-router-dom'
 import { CourseDetails } from '@app/types/common/university'
 
@@ -21,7 +20,7 @@ import {
     Languages,
     UserCheck,
 } from 'lucide-react'
-import { fetchLmsCourseMeta } from '@services/common/CourseService'
+import { fetchCourseDetails } from '@services/common/CourseService'
 import { useCourseDetailsStore } from '@app/store/public/coursesStore'
 import type { Courses } from '@app/types/common/courses'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -239,9 +238,10 @@ const CourseShow: React.FC = () => {
 
         setLoading(true)
         setError('')
-        fetchLmsCourseMeta(course_id)
+        fetchCourseDetails(course_id)
             .then((res) => {
                 setCourse(res)
+                setCourseDetails(res)
             })
             .catch((err) => {
                 console.log(err)
@@ -250,7 +250,7 @@ const CourseShow: React.FC = () => {
             .finally(() => {
                 setLoading(false)
             })
-    }, [course_id, setError, setLoading])
+    }, [course_id, setCourseDetails, setError, setLoading])
 
     if (loading) {
         return <Loading loading={loading} />

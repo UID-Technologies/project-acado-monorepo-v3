@@ -52,17 +52,30 @@ const Community: React.FC = () => {
                 {communities.map((community) => {
                     return (
                         <div
+                            key={community.id}
                             className="md:col-span-1 dark:bg-gray-900 bg-white transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-105
                                 rounded-lg"
                         >
                             <Link to={`/communities/${community.id}`}>
                                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
                                     <div className="relative w-full h-64 overflow-hidden rounded-t-md">
-                                        <img
-                                            src={community.image}
-                                            alt="Community"
-                                            className="w-full h-full object-cover"
-                                        />
+                                        {community.image && !community.image.includes('placeholder') ? (
+                                            <img
+                                                src={community.image}
+                                                alt="Community"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div 
+                                                className="w-full h-full flex items-center justify-center"
+                                                style={{ backgroundColor: community.category_color || '#3B82F6' }}
+                                            >
+                                                <div className="text-center text-white">
+                                                    <span className="text-6xl mb-2">🌐</span>
+                                                    <p className="text-xl font-bold mt-2">{community.title}</p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="px-3 py-4">
                                         <div className="font-bold text-xl dark:text-white">

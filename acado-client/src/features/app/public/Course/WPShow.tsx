@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { fetchCourseById } from '@services/public/CoursesService';
 import { useParams, Link } from 'react-router-dom';
 import Loading from '@/components/shared/Loading';
 import { Alert } from '@/components/ui';
@@ -14,7 +13,7 @@ import {
   Languages,
   UserCheck,
 } from 'lucide-react';
-import { fetchLmsCourseMeta } from '@services/common/CourseService';
+import { fetchCourseDetails } from '@services/common/CourseService';
 import { useCourseDetailsStore } from '@app/store/public/coursesStore';
 import type { Courses } from '@app/types/common/courses';
 import '../../common/Details.css';
@@ -63,37 +62,32 @@ const CourseShow: React.FC = () => {
     []
   );
 
-  // ✅ Fetch base course data
+  // ✅ Fetch course details (hybrid approach: new API + legacy meta)
   useEffect(() => {
     if (!course_id) {
       setError('Course ID is required');
       return;
     }
-    if (isNaN(Number(course_id))) {
-      setError('Invalid Course ID');
-      return;
-    }
+    // Note: Removed numeric validation - new API uses MongoDB ObjectIDs (strings)
+    // Old validation: isNaN(Number(course_id)) - this breaks with ObjectIDs
 
     setLoading(true);
     setError('');
-    fetchCourseById(course_id)
-      .then((data) => setCourseDetails(data))
-      .catch((err) => setError(err?.message || 'Failed to load course details'))
-      .finally(() => setLoading(false));
-  }, [course_id, setCourseDetails, setError, setLoading]);
-
-  // ✅ Fetch LMS metadata
-  useEffect(() => {
-    if (!course_id) return;
-    setLoading(true);
-    fetchLmsCourseMeta(course_id)
-      .then(setCourse)
-      .catch((err) => {
-        console.error(err);
-        setError('Failed to fetch course meta');
+    
+    fetchCourseDetails(course_id)
+      .then((data) => {
+        // Set both course details and course meta from hybrid response
+        setCourseDetails(data);
+        setCourse(data);
       })
-      .finally(() => setLoading(false));
-  }, [course_id, setError, setLoading]);
+      .catch((err) => {
+        console.error('Failed to fetch course details:', err);
+        setError(err?.message || 'Failed to load course details');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [course_id, setCourseDetails, setError, setLoading]);
 
   // ✅ Scroll spy
   useEffect(() => {

@@ -1,7 +1,7 @@
 import '@/assets/styles/wordpress.css'
 import { Award, BookOpen, Building2, Clock, DollarSign, GraduationCap, Languages, UserCheck } from 'lucide-react'
 import React from 'react'
-import { fetchLmsCourseMeta } from '@services/common/CourseService'
+import { fetchCourseDetails } from '@services/common/CourseService'
 import { Courses } from '@app/types/common/courses'
 import Loading from '@/components/shared/Loading'
 import Error from '@/components/shared/Error'
@@ -27,7 +27,7 @@ const CourseShow: React.FC = () => {
 
         setLoading(true);
         setError('');
-        fetchLmsCourseMeta(course_id).then(res => {
+        fetchCourseDetails(course_id).then(res => {
             setCourse(res);
         }).catch(err => {
             console.log(err);
@@ -35,7 +35,7 @@ const CourseShow: React.FC = () => {
         }).finally(() => {
             setLoading(false);
         })
-    }, [])
+    }, [course_id])
 
     if (loading) return <Loading loading={loading} />
     if (error) return <Error error={error} />
