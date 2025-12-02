@@ -119,8 +119,8 @@ export const FormMappingDialog: React.FC<FormMappingDialogProps> = ({
   const fetchUniversities = async () => {
     try {
       setLoadingUniversities(true);
-      const response = await universitiesApi.getUniversities({ page: 1, pageSize: 200, includeInactive: true });
-      const list = response.data ?? [];
+      // Fetch all universities - backend returns array directly
+      const list = await universitiesApi.getUniversities({ isActive: true });
       setUniversities(list);
       return list;
     } catch (err: any) {
