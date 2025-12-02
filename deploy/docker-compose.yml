@@ -31,7 +31,7 @@ services:
       - MONGO_URI=mongodb://127.0.0.1:27017/acadodb
       - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:8080,http://localhost:80,http://localhost:3000,http://20.197.35.236:8080,http://20.197.35.236:80}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
       - LOG_LEVEL=${LOG_LEVEL:-info}
       # Azure Blob Storage (optional)
       - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING:-}
