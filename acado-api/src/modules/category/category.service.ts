@@ -157,7 +157,7 @@ export class CategoryService {
       throw new NotFoundError('Category not found');
     }
     const savedJson = saved.toJSON();
-    return savedJson.subcategories.find(s => s.id === subId);
+    return savedJson.subcategories.find((s: any) => s.id === subId);
   }
 
   async deleteSubcategory(categoryId: string, subId: string) {

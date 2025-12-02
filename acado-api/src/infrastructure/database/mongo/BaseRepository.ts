@@ -37,7 +37,8 @@ export abstract class BaseRepository<T extends Document> {
   }
 
   async createMany(data: Partial<T>[]): Promise<T[]> {
-    return this.model.insertMany(data);
+    const result = await this.model.insertMany(data);
+    return result as unknown as T[];
   }
 
   async update(id: string, data: UpdateQuery<T>, options?: QueryOptions): Promise<T | null> {

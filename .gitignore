@@ -4,8 +4,8 @@
 .env.production
 .env.staging
 
-# Docker volumes and data
-data/
+# Docker volumes and data (root level only)
+/data/
 mongodb/
 mongodb-config/
 /var/lib/akedo/

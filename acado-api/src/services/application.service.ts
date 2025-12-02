@@ -52,7 +52,7 @@ export interface QueryApplicationsInput {
 /**
  * Enrich application with related data (course, university, user, form)
  */
-async function enrichApplication(app: any): Promise<any> {
+export async function enrichApplication(app: any): Promise<any> {
   const enriched: any = { ...app };
   
   try {

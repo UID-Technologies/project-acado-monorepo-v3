@@ -41,7 +41,7 @@ export class ApplicationService {
 
   async createApplication(data: CreateApplicationInput, userId?: string) {
     const { createApplication: createApplicationService } = await import('../../services/application.service.js');
-    return createApplicationService(data, userId);
+    return createApplicationService(data, userId as any);
   }
 
   async updateApplication(id: string, data: UpdateApplicationInput) {

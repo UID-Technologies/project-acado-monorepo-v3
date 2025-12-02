@@ -16,7 +16,9 @@ export class UserController {
       const params = listUsersDto.parse(req.query);
       const result = await this.userService.listUsers(params);
       // Handle both old format (with data/items) and new format (array)
-      const users = Array.isArray(result) ? result : (result.data || result.items || []);
+      const users = Array.isArray(result) 
+        ? result 
+        : ((result as any).data || (result as any).items || []);
       res.json(successResponse(users));
     } catch (error) {
       next(error);
@@ -35,7 +37,7 @@ export class UserController {
   createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = createUserDto.parse(req.body);
-      const user = await this.userService.createUser(data);
+      const user = await this.userService.createUser(data as any);
       res.status(201).json(successResponse(user));
     } catch (error) {
       next(error);
@@ -45,7 +47,7 @@ export class UserController {
   updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = updateUserDto.parse(req.body);
-      const user = await this.userService.updateUser(req.params.userId, data);
+      const user = await this.userService.updateUser(req.params.userId, data as any);
       res.json(successResponse(user));
     } catch (error) {
       next(error);
@@ -64,7 +66,7 @@ export class UserController {
   bulkImportUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = bulkCreateUsersDto.parse(req.body);
-      const users = await this.userService.bulkCreateUsers(data.users);
+      const users = await this.userService.bulkCreateUsers(data.users as any);
       res.status(201).json(successResponse({ data: users }));
     } catch (error) {
       next(error);

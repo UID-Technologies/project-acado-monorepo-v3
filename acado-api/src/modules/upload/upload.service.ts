@@ -90,14 +90,7 @@ export interface UploadFileResult {
 
 export class UploadService {
   async uploadFile(file: Express.Multer.File, fieldName?: string): Promise<UploadFileResult> {
-    logger.info('Upload request received', {
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size,
-      path: file.path,
-      fieldName,
-      azureConfigured: isAzureConfigured,
-    });
+    logger.info(`Upload request received: ${file.originalname}, size: ${file.size}, azure: ${isAzureConfigured}`);
 
     if (!file) {
       throw new ApiError(400, 'No file uploaded', 'NO_FILE', { message: 'Please provide a file to upload' });

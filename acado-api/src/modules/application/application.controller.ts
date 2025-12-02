@@ -15,8 +15,10 @@ export class ApplicationController {
     try {
       const query = queryApplicationsDto.parse(req.query);
       const result = await this.applicationService.listApplications(query);
-      // Handle both old format (with data/items) and new format (array)
-      const applications = Array.isArray(result) ? result : (result.data || result.items || []);
+      // Handle both old format (with applications/data/items) and new format (array)
+      const applications = Array.isArray(result) 
+        ? result 
+        : ((result as any).applications || (result as any).data || (result as any).items || []);
       res.json(successResponse(applications));
     } catch (error) {
       next(error);

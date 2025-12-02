@@ -15,8 +15,8 @@ export class OrganizationService {
   }
 
   async listOrganizations() {
-    const organizations = await this.organizationRepo.findAll();
-    return organizations.map(org => org.toJSON());
+    const organizations = await this.organizationRepo.find({});
+    return organizations.map((org: any) => org.toJSON());
   }
 
   async listOrganizationsPublic() {

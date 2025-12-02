@@ -15,8 +15,10 @@ export class FormController {
     try {
       const query = queryFormsDto.parse(req.query);
       const result = await this.formService.listForms(query);
-      // Handle both old format (with data/items) and new format (array)
-      const forms = Array.isArray(result) ? result : (result.data || result.items || []);
+      // Handle both old format (with forms/data/items) and new format (array)
+      const forms = Array.isArray(result) 
+        ? result 
+        : ((result as any).forms || (result as any).data || (result as any).items || []);
       res.json(successResponse(forms));
     } catch (error) {
       next(error);

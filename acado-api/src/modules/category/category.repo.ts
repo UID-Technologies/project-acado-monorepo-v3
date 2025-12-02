@@ -5,7 +5,7 @@ import { FilterQuery } from 'mongoose';
 
 export class CategoryRepository extends BaseRepository<CategoryDocument> {
   constructor() {
-    super(Category);
+    super(Category as any);
   }
 
   async findByName(name: string): Promise<CategoryDocument | null> {

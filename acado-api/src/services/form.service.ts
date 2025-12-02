@@ -37,7 +37,7 @@ export interface QueryFormsInput {
   sort?: string;
 }
 
-async function enrichFormDocument(rawForm: any) {
+export async function enrichFormDocument(rawForm: any) {
   const formJson = rawForm.toJSON ? rawForm.toJSON() : { ...rawForm };
 
   // Ensure university name

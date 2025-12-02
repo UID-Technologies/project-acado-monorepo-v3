@@ -40,7 +40,7 @@ export class OrganizationController {
   createOrganization = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = createOrganizationDto.parse(req.body);
-      const result = await this.organizationService.createOrganization(data);
+      const result = await this.organizationService.createOrganization(data as any);
       res.status(201).json(successResponse(result));
     } catch (error) {
       next(error);

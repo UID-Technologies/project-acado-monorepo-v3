@@ -4,7 +4,7 @@ import Location, { LocationDocument } from './location.model.js';
 
 export class LocationRepository extends BaseRepository<LocationDocument> {
   constructor() {
-    super(Location);
+    super(Location as any);
   }
 }
 
