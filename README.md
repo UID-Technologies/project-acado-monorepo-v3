@@ -440,3 +440,20 @@ nano .env  # Update JWT_SECRET and API URLs
 
 # 4. Initialize database
 ./scripts/deploy.sh init-db
+
+
+
+
+
+AFTER FIXING PORT:
+
+Access your applications:
+
+Client: http://20.197.35.236
+Admin: http://20.197.35.236:8080
+API: http://20.197.35.236:5000
+
+
+Test login:
+Email: superadmin@test.com
+Password: password123
