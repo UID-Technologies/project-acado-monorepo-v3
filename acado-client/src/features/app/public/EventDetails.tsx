@@ -52,12 +52,12 @@ const EventDetails: React.FC = () => {
                             Skills you will gain
                         </h2>
                         <div className="flex flex-wrap gap-2">
-                            {eventData.job_skill_details.all_program_skills.map((skill: string, index: number) => (
+                            {eventData.job_skill_details.all_program_skills.map((skill: any, index: number) => (
                                 <span
                                     key={index}
                                     className="px-3 py-1.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs sm:text-sm font-medium rounded-full"
                                 >
-                                    {skill}
+                                    {typeof skill === 'string' ? skill : skill.skill_name}
                                 </span>
                             ))}
                         </div>

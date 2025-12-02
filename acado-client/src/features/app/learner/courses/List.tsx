@@ -24,14 +24,15 @@ const Courses: React.FC = () => {
 
 
     // Memoized params to avoid re-renders causing re-fetch
+    // Note: Using legacy parameter names here - they will be mapped to new API params in the service layer
     const params = useMemo(() => {
         const p = new URLSearchParams()
-        if (selectedUniversity) p.append('org_id', selectedUniversity)
-        if (selectedCountry) p.append('country_id', selectedCountry)
-        if (selectedDegree) p.append('cat_id', selectedDegree)
-        if (query) p.append('query', query)
+        if (selectedUniversity) p.append('org_id', selectedUniversity) // Will be mapped to 'universityId'
+        if (selectedCountry) p.append('country_id', selectedCountry) // Will be mapped to 'locationId'
+        if (selectedDegree) p.append('cat_id', selectedDegree) // Will be mapped to 'categoryId'
+        if (query) p.append('query', query) // Will be mapped to 'search'
         p.append('page', currentPage.toString())
-        p.append('items', ITEMS_PER_PAGE.toString())
+        p.append('items', ITEMS_PER_PAGE.toString()) // Will be mapped to 'limit'
         return p
     }, [selectedUniversity, selectedCountry, selectedDegree, query, currentPage])
 
@@ -39,7 +40,8 @@ const Courses: React.FC = () => {
 
     const paginationInfo = coursesData?.pagination
     const courses = coursesData?.data || []
-    const totalPages = paginationInfo?.last_page || 1
+    // Support both legacy (last_page) and new API (totalPages) pagination formats
+    const totalPages = paginationInfo?.totalPages || paginationInfo?.last_page || 1
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) setCurrentPage(page)

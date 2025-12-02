@@ -1,6 +1,7 @@
 import ApiService from '@services/ApiService'
 import { Course, CourseData, CourseDetails, CourseDetailsResponse } from '@app/types/common/university'
 import { CourseCategory, CourseCategoryResponse } from '@app/types/public/courseCategory';
+import { adaptListResponse } from '@/utils/apiResponseAdapter';
 
 export async function fetchCourses(): Promise<Course[]> {
     try {
@@ -29,11 +30,12 @@ export async function fetchCourseById(course_id: string): Promise<CourseDetails>
 
 export async function fetchCoursesCategory(): Promise<CourseCategory[]> {
     try {
-        const response = await ApiService.fetchDataWithAxios<CourseCategoryResponse>({
-            url: 'get-course-category',
+        const response = await ApiService.fetchDataWithAxios<any>({
+            url: 'course-categories', // Updated from 'get-course-category' to 'course-categories'
             method: 'get',
         })
-        return response.data;
+        // Adapt response to handle both legacy and new API formats
+        return adaptListResponse<CourseCategory>(response);
     } catch (error) {
         throw error as string;
     }

@@ -13,12 +13,21 @@ const Events: React.FC = () => {
     useEffect(() => {
         const loadEvents = async () => {
             setIsLoading(true);
+            setError(null); // Clear error at start of load
             try {
                 const data = await fetchEvents('event');
-                setEvents(data);
+                console.log('✅ Events loaded:', data);
+                if (data && data.length > 0) {
+                    setEvents(data);
+                    setError(null); // Explicitly clear error on success
+                } else {
+                    setEvents([]);
+                    setError('No events found');
+                }
             } catch (error) {
-                setError('Failed to load events');
-                console.log(error);
+                console.error('❌ Failed to load events:', error);
+                setError(typeof error === 'string' ? error : 'Failed to load events');
+                setEvents([]); // Clear events on error
             } finally {
                 setIsLoading(false);
             }

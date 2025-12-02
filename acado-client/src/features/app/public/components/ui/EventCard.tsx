@@ -28,7 +28,13 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     return (
         <Card className='p-0 flex flex-col justify-between h-full'>
             <CardHeader className='p-0 h-48 overflow-hidden relative'>
-                <img src={event.image} alt={event.name} className="rounded-t w-full object-cover" />
+                {event.image ? (
+                    <img src={event.image} alt={event.name} className="rounded-t w-full object-cover" />
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                        <span className="text-4xl text-primary/30">📅</span>
+                    </div>
+                )}
                 <div className="absolute -top-1.5 bg-black bg-opacity-50 w-full h-full"></div>
                 <Badge className={statusClass()}>{event.com_status?.program_status}</Badge>
             </CardHeader>

@@ -279,13 +279,32 @@ export async function fetchSubDomains(domain_id: string): Promise<SubDomain[]> {
 // events
 export async function fetchEvent(ongoing_date?: string | null, is_assigned?: number): Promise<Event[]> {
     try {
-        const response = await ApiService.fetchDataWithAxios<EventApiResponse>({
-            url: '/competition-list' + (ongoing_date ? `?ongoing_date=${ongoing_date}` : '') + (is_assigned ? `&is_assigned=${is_assigned}` : ''),
+        // Use new events endpoint from acado-api
+        const params = new URLSearchParams();
+        if (ongoing_date) params.append('ongoing_date', ongoing_date);
+        if (is_assigned) params.append('is_assigned', is_assigned.toString());
+        
+        const response = await ApiService.fetchDataWithAxios<any>({
+            url: '/events',
             method: 'get',
-        })
-        return response.data;
+            params: params
+        });
+        
+        // Adapt response - acado-api returns { success: true, data: [...] }
+        // Import adapter at top of file if needed
+        const events = response?.data || response || [];
+        return Array.isArray(events) ? events : [];
     } catch (error) {
-        throw error as string;
+        // Fallback to legacy endpoint
+        try {
+            const response = await ApiService.fetchDataWithAxios<EventApiResponse>({
+                url: '/competition-list' + (ongoing_date ? `?ongoing_date=${ongoing_date}` : '') + (is_assigned ? `&is_assigned=${is_assigned}` : ''),
+                method: 'get',
+            })
+            return response.data;
+        } catch (fallbackError) {
+            throw error as string;
+        }
     }
 }
 

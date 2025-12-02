@@ -1,29 +1,23 @@
 // courseService.ts
 import ApiService from '@services/ApiService';
 import { Course, CourseDetails, CoursesApiResponse, CourseDetailsApiResponse, CourseModule, CourseModuleApiResponse, getContinueReadingCoursesResponse } from '@app/types/public/lmsCourses';
+import { mapLegacyToNewParams } from '@/utils/apiParamMapper';
+import { adaptCoursesResponse, adaptCourseDetailResponse } from '@/utils/apiResponseAdapter';
 
 // Fetch all courses
-
-// export async function fetchFreeCourses(query?: string): Promise<CoursesApiResponse> {
-//     try {
-//         const queryString = query ? `query=${encodeURIComponent(query.trim())}` : '';
-//         const response = await ApiService.fetchDataWithAxios<CoursesApiResponse>({
-//             url: `/v1/free-courses${queryString ? '?' + queryString : ''}`,
-//             method: 'get',
-//         });
-//         return response
-//     } catch (error) {
-//         throw error as string;
-//     }
-// }
 export async function fetchFreeCourses(query?: URLSearchParams): Promise<CoursesApiResponse> {
     try {
-        const response = await ApiService.fetchDataWithAxios<CoursesApiResponse>({
-            url: `/v1/free-courses`,
+        // Map legacy parameter names to new API parameter names
+        const mappedParams = query ? mapLegacyToNewParams(query) : undefined;
+        
+        const response = await ApiService.fetchDataWithAxios<any>({
+            url: `/courses`, // Updated from /v1/free-courses to /courses
             method: 'get',
-            params: query,
+            params: mappedParams,
         });
-        return response;
+        
+        // Adapt new API response to legacy format
+        return adaptCoursesResponse(response);
     } catch (error) {
         throw error as string;
     }
@@ -34,11 +28,14 @@ export async function fetchFreeCourses(query?: URLSearchParams): Promise<Courses
 // Fetch course by ID
 export async function fetchCourseById(course_id: string): Promise<CourseDetails> {
     try {
-        const response = await ApiService.fetchDataWithAxios<CourseDetailsApiResponse>({
-            url: `/v1/get-course-details/${course_id}`,
+        const response = await ApiService.fetchDataWithAxios<any>({
+            url: `/courses/${course_id}`, // Updated from /v1/get-course-details/:id to /courses/:id
             method: 'get',
         });
-        return response.data;
+        
+        // Adapt new API response format
+        const adaptedData = adaptCourseDetailResponse(response);
+        return adaptedData?.data || adaptedData;
     } catch (error) {
         throw error as string;
     }
@@ -139,7 +136,7 @@ export async function fetchForms() {
 export async function fetchModuleByCourseId(module_id: string): Promise<CourseModule> {
     try {
         const response = await ApiService.fetchDataWithAxios<CourseModuleApiResponse>({
-            url: `v1/module-content-list/${module_id}`,
+            url: `/courses/modules/${module_id}`, // Updated endpoint (Note: verify this endpoint exists in acado-api)
             method: 'get',
         });
         return response.data;

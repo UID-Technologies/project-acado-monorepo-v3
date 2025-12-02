@@ -38,7 +38,7 @@ export type AppConfig = {
 
 const appConfig: AppConfig = {
     appUrl: envConfig.appUrl,
-    apiPrefix: '/api',
+    apiPrefix: '', // Removed '/api' prefix - acado-api routes don't use it
     authenticatedEntryPath: '/dashboard',
     unAuthenticatedEntryPath: '/sign-in',
     locale: 'en',

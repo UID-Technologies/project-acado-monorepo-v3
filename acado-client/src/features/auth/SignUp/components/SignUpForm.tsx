@@ -63,23 +63,17 @@ const SignUpForm = (props: SignUpFormProps) => {
 
         if (!disableSubmit) {
             setSubmitting(true)
+            
+            // TODO: Add UI fields to select organizationId, universityId, and courseIds
+            // For now, using placeholder values - these should come from form inputs
             const result = await signUp({
-                name, password, email,
-                dob: '',
-                profilePic: "",
-                first_name: name,
-                last_name: "",
-                gender: "",
-                mobile_no: "",
-                alternate_mobile_no: "",
-                email_address: email,
-                date_of_birth: "",
-                db_code: "0",
-                username: email,
-                locale: "English",
-                created_timezone: "UTC+05:30",
-                wp_center_id: centerId ? parseInt(centerId) : null,
-                wp_course_id: courseId ? parseInt(courseId) : null
+                name,
+                password,
+                email,
+                username: email.split('@')[0], // Use email prefix as username
+                organizationId: '000000000000000000000000', // TODO: Get from form/API
+                universityId: '000000000000000000000000', // TODO: Get from form/API
+                courseIds: [], // TODO: Get from form
             })
 
             console.log(result);
