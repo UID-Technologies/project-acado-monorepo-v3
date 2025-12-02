@@ -22,7 +22,7 @@ import {
     UserCheck,
 } from 'lucide-react'
 import { fetchLmsCourseMeta } from '@services/common/CourseService'
-import { useCourseDetailsStore } from '@app/store/public/CoursesStore'
+import { useCourseDetailsStore } from '@app/store/public/coursesStore'
 import type { Courses } from '@app/types/common/courses'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import DummyImage from '@/assets/images/event.jpg'

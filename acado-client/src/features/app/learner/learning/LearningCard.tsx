@@ -1,7 +1,7 @@
 import { Globe, Users2, MessageCircle, Users, Compass, LineChart, FileText, GraduationCap } from "lucide-react"
 import React, { useCallback, useEffect, useState } from 'react';
 import { useUniversitiesStore } from '@app/store/public/___universitiesStore';
-import { useCourseStore } from '@app/store/public/CoursesStore';
+import { useCourseStore } from '@app/store/public/coursesStore';
 import { fetchUniversities, fetchCoursesByUniversityId } from '@services/public/UniversitiesService';
 import { Container } from '@/components/shared';
 import { Alert, Input } from '@/components/ui';
